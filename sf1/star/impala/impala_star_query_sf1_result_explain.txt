@@ -1,0 +1,1148 @@
+-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------
+-------------------------------------- impala_star_query_sf1_result_explain.txt ---------------------------------
+-------------------------------------- IMPALA QUERY NORMALIZED ---------------------------------
+15/04/2019 15:54:14.243
+
+
+--------------------------------------  Invalidate Schema  ---------------------------------
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: INVALIDATE METADATA
+Query submitted at: 2019-04-15 15:54:14 (Coordinator: http://bae7c8623cc0:25000)
+Query progress can be monitored at: http://bae7c8623cc0:25000/query_plan?query_id=874ce031e093b2b1:56e4266200000000
+Fetched 0 row(s) in 4.13s
+
+--------------------------------------STARTED QUERY 1. ---------------------------------
+15/04/2019 15:54:18.546
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from lo_lineitem_orders_star_parquet_impala where l_shipdate <= to_date(date_sub(cast('1998-12-01' as timestamp), interval 90 day)) group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                                     |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                                                                                                                                                                                  |
+| Per-Host Resource Estimates: Memory=828.00MB                                                                                                                                                                                                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                                 |
+| default.lo_lineitem_orders_star_parquet_impala                                                                                                                                                                                                                     |
+|                                                                                                                                                                                                                                                                    |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                                                                  |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                                |
+| |  order by: l_returnflag ASC, l_linestatus ASC                                                                                                                                                                                                                    |
+| |                                                                                                                                                                                                                                                                  |
+| 02:SORT                                                                                                                                                                                                                                                            |
+| |  order by: l_returnflag ASC, l_linestatus ASC                                                                                                                                                                                                                    |
+| |                                                                                                                                                                                                                                                                  |
+| 04:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                            |
+| |  output: sum:merge(l_quantity), sum:merge(l_extendedprice), sum:merge(l_extendedprice * (1 - l_discount)), sum:merge(l_extendedprice * (1 - l_discount) * (1 + l_tax)), avg:merge(l_quantity), avg:merge(l_extendedprice), avg:merge(l_discount), count:merge(*) |
+| |  group by: l_returnflag, l_linestatus                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                                  |
+| 03:EXCHANGE [HASH(l_returnflag,l_linestatus)]                                                                                                                                                                                                                      |
+| |                                                                                                                                                                                                                                                                  |
+| 01:AGGREGATE [STREAMING]                                                                                                                                                                                                                                           |
+| |  output: sum(l_quantity), sum(l_extendedprice), sum(l_extendedprice * (1 - l_discount)), sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)), avg(l_quantity), avg(l_extendedprice), avg(l_discount), count(*)                                                 |
+| |  group by: l_returnflag, l_linestatus                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                                  |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                                                                                                                                      |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                                                                                                                            |
+|    predicates: l_shipdate <= '1998-09-02'                                                                                                                                                                                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 3.88s
+15/04/2019 15:54:22.610
+--------------------------------------Finished QUERY 1.---------------------------------
+
+--------------------------------------STARTED  QUERY 2. --------------------------------
+--------------------------------------Finished QUERY 2. --------------------------------
+
+--------------------------------------STARTED  QUERY 3. ---------------------------------
+15/04/2019 15:54:22.624
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select l_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, to_date(o_orderdate), o_shippriority from c_customer_star_parquet_impala inner join  lo_lineitem_orders_star_parquet_impala on c_custkey = o_custkey where c_mktsegment = 'BUILDING' and to_date(o_orderdate) < to_date('1995-03-15') and to_date(l_shipdate) > to_date('1995-03-15') group by l_orderkey, to_date(o_orderdate), o_shippriority order by revenue desc, to_date(o_orderdate) limit 10;  --Query 4 raw / presto / drill ok select o_orderpriority, count(*) as order_count from o_orders where o_orderdate >= date '1993-07-01' and o_orderdate < date '1993-07-01' + interval '3' month and exists ( select * from l_lineitem where l_orderkey = o_orderkey and l_commitdate < l_receiptdate ) group by o_orderpriority order by o_orderpriority
++----------------------------------------------------------------------------------------+
+| Explain String                                                                         |
++----------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=70.94MB                                      |
+| Per-Host Resource Estimates: Memory=898.94MB                                           |
+| WARNING: The following tables are missing relevant table and/or column statistics.     |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala |
+|                                                                                        |
+| PLAN-ROOT SINK                                                                         |
+| |                                                                                      |
+| 08:MERGING-EXCHANGE [UNPARTITIONED]                                                    |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC, to_date(o_orderdate) ASC    |
+| |  limit: 10                                                                           |
+| |                                                                                      |
+| 04:TOP-N [LIMIT=10]                                                                    |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC, to_date(o_orderdate) ASC    |
+| |                                                                                      |
+| 07:AGGREGATE [FINALIZE]                                                                |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                               |
+| |  group by: l_orderkey, to_date(o_orderdate), o_shippriority                          |
+| |                                                                                      |
+| 06:EXCHANGE [HASH(l_orderkey,to_date(o_orderdate),o_shippriority)]                     |
+| |                                                                                      |
+| 03:AGGREGATE [STREAMING]                                                               |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                     |
+| |  group by: l_orderkey, to_date(o_orderdate), o_shippriority                          |
+| |                                                                                      |
+| 02:HASH JOIN [INNER JOIN, BROADCAST]                                                   |
+| |  hash predicates: o_custkey = c_custkey                                              |
+| |  runtime filters: RF000 <- c_custkey                                                 |
+| |                                                                                      |
+| |--05:EXCHANGE [BROADCAST]                                                             |
+| |  |                                                                                   |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala]                               |
+| |     partitions=1/1 files=1 size=24.03MB                                              |
+| |     predicates: c_mktsegment = 'BUILDING'                                            |
+| |                                                                                      |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                          |
+|    partitions=1/1 files=6 size=763.42MB                                                |
+|    predicates: to_date(l_shipdate) > '1995-03-15', to_date(o_orderdate) < '1995-03-15' |
+|    runtime filters: RF000 -> o_custkey                                                 |
++----------------------------------------------------------------------------------------+
+Fetched 38 row(s) in 3.74s
+15/04/2019 15:54:26.559
+--------------------------------------Finished QUERY 3.----------------------------------
+
+--------------------------------------STARTED  QUERY 4. ---------------------------------
+15/04/2019 15:54:26.567
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select o_orderpriority, count (distinct o_orderkey) as order_count  from lo_lineitem_orders_star_parquet_impala where o_orderdate >= to_date('1993-07-01') and to_date(o_orderdate) < to_date(date_add(cast('1993-07-01' as timestamp), interval 3 month)) and to_date(l_commitdate) < to_date(l_receiptdate ) group by o_orderpriority  order by o_orderpriority
++---------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                  |
++---------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=148.00MB                                                                              |
+| Per-Host Resource Estimates: Memory=924.00MB                                                                                    |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                              |
+| default.lo_lineitem_orders_star_parquet_impala                                                                                  |
+|                                                                                                                                 |
+| PLAN-ROOT SINK                                                                                                                  |
+| |                                                                                                                               |
+| 08:MERGING-EXCHANGE [UNPARTITIONED]                                                                                             |
+| |  order by: o_orderpriority ASC                                                                                                |
+| |                                                                                                                               |
+| 03:SORT                                                                                                                         |
+| |  order by: o_orderpriority ASC                                                                                                |
+| |                                                                                                                               |
+| 07:AGGREGATE [FINALIZE]                                                                                                         |
+| |  output: count:merge(o_orderkey)                                                                                              |
+| |  group by: o_orderpriority                                                                                                    |
+| |                                                                                                                               |
+| 06:EXCHANGE [HASH(o_orderpriority)]                                                                                             |
+| |                                                                                                                               |
+| 02:AGGREGATE [STREAMING]                                                                                                        |
+| |  output: count(o_orderkey)                                                                                                    |
+| |  group by: o_orderpriority                                                                                                    |
+| |                                                                                                                               |
+| 05:AGGREGATE                                                                                                                    |
+| |  group by: o_orderpriority, o_orderkey                                                                                        |
+| |                                                                                                                               |
+| 04:EXCHANGE [HASH(o_orderpriority,o_orderkey)]                                                                                  |
+| |                                                                                                                               |
+| 01:AGGREGATE [STREAMING]                                                                                                        |
+| |  group by: o_orderpriority, o_orderkey                                                                                        |
+| |                                                                                                                               |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                   |
+|    partitions=1/1 files=6 size=763.42MB                                                                                         |
+|    predicates: o_orderdate >= '1993-07-01', to_date(o_orderdate) < '1993-10-01', to_date(l_commitdate) < to_date(l_receiptdate) |
++---------------------------------------------------------------------------------------------------------------------------------+
+Fetched 34 row(s) in 0.01s
+15/04/2019 15:54:26.759
+--------------------------------------Finished QUERY 4.----------------------------------
+
+--------------------------------------STARTED  QUERY 5. ---------------------------------
+15/04/2019 15:54:26.768
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select c.n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from c_customer_star_parquet_impala a , lo_lineitem_orders_star_parquet_impala b, s_supplier_star_parquet_impala c where a.c_custkey = b.o_custkey and b.l_suppkey = c.s_suppkey and c_nationkey = s_nationkey and c.r_name = 'ASIA' and to_date(b.o_orderdate) >= to_date('1994-01-01') and to_date(b.o_orderdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) group by c.n_name order by revenue desc
++--------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=89.88MB                                                                              |
+| Per-Host Resource Estimates: Memory=821.88MB                                                                                   |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                             |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala, default.s_supplier_star_parquet_impala |
+|                                                                                                                                |
+| PLAN-ROOT SINK                                                                                                                 |
+| |                                                                                                                              |
+| 12:MERGING-EXCHANGE [UNPARTITIONED]                                                                                            |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                                      |
+| |                                                                                                                              |
+| 06:SORT                                                                                                                        |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                                      |
+| |                                                                                                                              |
+| 11:AGGREGATE [FINALIZE]                                                                                                        |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                                       |
+| |  group by: c.n_name                                                                                                          |
+| |                                                                                                                              |
+| 10:EXCHANGE [HASH(c.n_name)]                                                                                                   |
+| |                                                                                                                              |
+| 05:AGGREGATE [STREAMING]                                                                                                       |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                                             |
+| |  group by: c.n_name                                                                                                          |
+| |                                                                                                                              |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                                                           |
+| |  hash predicates: b.l_suppkey = c.s_suppkey, c_nationkey = s_nationkey                                                       |
+| |  runtime filters: RF000 <- c.s_suppkey, RF001 <- s_nationkey                                                                 |
+| |                                                                                                                              |
+| |--09:EXCHANGE [BROADCAST]                                                                                                     |
+| |  |                                                                                                                           |
+| |  02:SCAN HDFS [default.s_supplier_star_parquet_impala c]                                                                     |
+| |     partitions=1/1 files=1 size=1.50MB                                                                                       |
+| |     predicates: c.r_name = 'ASIA'                                                                                            |
+| |                                                                                                                              |
+| 03:HASH JOIN [INNER JOIN, PARTITIONED]                                                                                         |
+| |  hash predicates: b.o_custkey = a.c_custkey                                                                                  |
+| |  runtime filters: RF004 <- a.c_custkey                                                                                       |
+| |                                                                                                                              |
+| |--08:EXCHANGE [HASH(a.c_custkey)]                                                                                             |
+| |  |                                                                                                                           |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala a]                                                                     |
+| |     partitions=1/1 files=1 size=24.03MB                                                                                      |
+| |     runtime filters: RF001 -> c_nationkey                                                                                    |
+| |                                                                                                                              |
+| 07:EXCHANGE [HASH(b.o_custkey)]                                                                                                |
+| |                                                                                                                              |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala b]                                                                |
+|    partitions=1/1 files=6 size=763.42MB                                                                                        |
+|    predicates: to_date(b.o_orderdate) < '1995-01-01', to_date(b.o_orderdate) >= '1994-01-01'                                   |
+|    runtime filters: RF000 -> b.l_suppkey, RF004 -> b.o_custkey                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------+
+Fetched 49 row(s) in 3.60s
+15/04/2019 15:54:30.561
+--------------------------------------Finished QUERY 5.----------------------------------
+
+--------------------------------------STARTED  QUERY 6. ---------------------------------
+15/04/2019 15:54:30.570
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice*l_discount) as revenue from lo_lineitem_orders_star_parquet_impala where to_date(l_shipdate) >= to_date('1994-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                            |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                                                                                                                                                                                              |
+| Per-Host Resource Estimates: Memory=340.00MB                                                                                                                                                                                                              |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                        |
+| default.lo_lineitem_orders_star_parquet_impala                                                                                                                                                                                                            |
+|                                                                                                                                                                                                                                                           |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                         |
+| 03:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                   |
+| |  output: sum:merge(l_extendedprice * l_discount)                                                                                                                                                                                                        |
+| |                                                                                                                                                                                                                                                         |
+| 02:EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                               |
+| |                                                                                                                                                                                                                                                         |
+| 01:AGGREGATE                                                                                                                                                                                                                                              |
+| |  output: sum(l_extendedprice * l_discount)                                                                                                                                                                                                              |
+| |                                                                                                                                                                                                                                                         |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                                                                                                                             |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                                                                                                                   |
+|    predicates: l_discount <= 0.070000000000000006661338147750939242541790008544921875, l_discount >= 0.05000000000000000277555756156289135105907917022705078125, l_quantity < 24, to_date(l_shipdate) < '1995-01-01', to_date(l_shipdate) >= '1994-01-01' |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 18 row(s) in 0.01s
+15/04/2019 15:54:30.758
+--------------------------------------Finished QUERY 6.----------------------------------
+
+--------------------------------------STARTED  QUERY 7. ---------------------------------
+15/04/2019 15:54:30.766
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select supp_nation, cust_nation, l_year, sum(volume) as revenue from ( select a.n_name as supp_nation, c.n_name as cust_nation, year(to_date(l_shipdate)) as l_year, b.l_extendedprice * (1 - b.l_discount) as volume from s_supplier_star_parquet_impala a, lo_lineitem_orders_star_parquet_impala b, c_customer_star_parquet_impala c where a.s_suppkey = b.l_suppkey and c.c_custkey = b.o_custkey and ( (a.n_name = 'FRANCE' and c.n_name = 'GERMANY') or (a.n_name = 'GERMANY' and c.n_name = 'FRANCE') ) and to_date(l_shipdate) between to_date('1995-01-01') and to_date('1996-12-31') ) as shipping group by supp_nation, cust_nation, l_year order by supp_nation, cust_nation, l_year
++--------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=92.44MB                                                                              |
+| Per-Host Resource Estimates: Memory=792.44MB                                                                                   |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                             |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala, default.s_supplier_star_parquet_impala |
+|                                                                                                                                |
+| PLAN-ROOT SINK                                                                                                                 |
+| |                                                                                                                              |
+| 11:MERGING-EXCHANGE [UNPARTITIONED]                                                                                            |
+| |  order by: supp_nation ASC, cust_nation ASC, l_year ASC                                                                      |
+| |                                                                                                                              |
+| 06:SORT                                                                                                                        |
+| |  order by: supp_nation ASC, cust_nation ASC, l_year ASC                                                                      |
+| |                                                                                                                              |
+| 10:AGGREGATE [FINALIZE]                                                                                                        |
+| |  output: sum:merge(volume)                                                                                                   |
+| |  group by: supp_nation, cust_nation, l_year                                                                                  |
+| |                                                                                                                              |
+| 09:EXCHANGE [HASH(supp_nation,cust_nation,l_year)]                                                                             |
+| |                                                                                                                              |
+| 05:AGGREGATE [STREAMING]                                                                                                       |
+| |  output: sum(b.l_extendedprice * (1 - b.l_discount))                                                                         |
+| |  group by: a.n_name, c.n_name, year(to_date(l_shipdate))                                                                     |
+| |                                                                                                                              |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                                                           |
+| |  hash predicates: b.o_custkey = c.c_custkey                                                                                  |
+| |  other predicates: ((a.n_name = 'FRANCE' AND c.n_name = 'GERMANY') OR (a.n_name = 'GERMANY' AND c.n_name = 'FRANCE'))        |
+| |  runtime filters: RF000 <- c.c_custkey                                                                                       |
+| |                                                                                                                              |
+| |--08:EXCHANGE [BROADCAST]                                                                                                     |
+| |  |                                                                                                                           |
+| |  02:SCAN HDFS [default.c_customer_star_parquet_impala c]                                                                     |
+| |     partitions=1/1 files=1 size=24.03MB                                                                                      |
+| |                                                                                                                              |
+| 03:HASH JOIN [INNER JOIN, BROADCAST]                                                                                           |
+| |  hash predicates: b.l_suppkey = a.s_suppkey                                                                                  |
+| |  runtime filters: RF002 <- a.s_suppkey                                                                                       |
+| |                                                                                                                              |
+| |--07:EXCHANGE [BROADCAST]                                                                                                     |
+| |  |                                                                                                                           |
+| |  00:SCAN HDFS [default.s_supplier_star_parquet_impala a]                                                                     |
+| |     partitions=1/1 files=1 size=1.50MB                                                                                       |
+| |                                                                                                                              |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala b]                                                                |
+|    partitions=1/1 files=6 size=763.42MB                                                                                        |
+|    predicates: to_date(l_shipdate) <= '1996-12-31', to_date(l_shipdate) >= '1995-01-01'                                        |
+|    runtime filters: RF000 -> b.o_custkey, RF002 -> b.l_suppkey                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------+
+Fetched 46 row(s) in 0.02s
+15/04/2019 15:54:30.976
+--------------------------------------Finished QUERY 7.----------------------------------
+
+--------------------------------------STARTED  QUERY 8. ---------------------------------
+15/04/2019 15:54:30.984
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from ( select year(to_date(o_orderdate)) as o_year, l_extendedprice * (1-l_discount) as volume, b.n_name as nation from p_part_star_parquet_impala a, s_supplier_star_parquet_impala b, lo_lineitem_orders_star_parquet_impala c, c_customer_star_parquet_impala d where a.p_partkey = c.l_partkey and b.s_suppkey = c.l_suppkey and c.o_custkey = d.c_custkey and d.r_name = 'AMERICA' and c.o_orderdate between to_date('1995-01-01') and to_date('1996-12-31') and a.p_type = 'ECONOMY ANODIZED STEEL' ) as all_nations group by o_year order by o_year
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                     |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=82.81MB                                                                                                                  |
+| Per-Host Resource Estimates: Memory=910.81MB                                                                                                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                 |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala, default.s_supplier_star_parquet_impala |
+|                                                                                                                                                                    |
+| PLAN-ROOT SINK                                                                                                                                                     |
+| |                                                                                                                                                                  |
+| 14:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                |
+| |  order by: o_year ASC                                                                                                                                            |
+| |                                                                                                                                                                  |
+| 08:SORT                                                                                                                                                            |
+| |  order by: o_year ASC                                                                                                                                            |
+| |                                                                                                                                                                  |
+| 13:AGGREGATE [FINALIZE]                                                                                                                                            |
+| |  output: sum:merge(CASE WHEN nation = 'BRAZIL' THEN volume ELSE 0 END), sum:merge(volume)                                                                        |
+| |  group by: o_year                                                                                                                                                |
+| |                                                                                                                                                                  |
+| 12:EXCHANGE [HASH(o_year)]                                                                                                                                         |
+| |                                                                                                                                                                  |
+| 07:AGGREGATE [STREAMING]                                                                                                                                           |
+| |  output: sum(CASE WHEN b.n_name = 'BRAZIL' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum(l_extendedprice * (1 - l_discount))                          |
+| |  group by: year(to_date(o_orderdate))                                                                                                                            |
+| |                                                                                                                                                                  |
+| 06:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                               |
+| |  hash predicates: c.o_custkey = d.c_custkey                                                                                                                      |
+| |  runtime filters: RF000 <- d.c_custkey                                                                                                                           |
+| |                                                                                                                                                                  |
+| |--11:EXCHANGE [BROADCAST]                                                                                                                                         |
+| |  |                                                                                                                                                               |
+| |  03:SCAN HDFS [default.c_customer_star_parquet_impala d]                                                                                                         |
+| |     partitions=1/1 files=1 size=24.03MB                                                                                                                          |
+| |     predicates: d.r_name = 'AMERICA'                                                                                                                             |
+| |                                                                                                                                                                  |
+| 05:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                               |
+| |  hash predicates: c.l_suppkey = b.s_suppkey                                                                                                                      |
+| |  runtime filters: RF002 <- b.s_suppkey                                                                                                                           |
+| |                                                                                                                                                                  |
+| |--10:EXCHANGE [BROADCAST]                                                                                                                                         |
+| |  |                                                                                                                                                               |
+| |  01:SCAN HDFS [default.s_supplier_star_parquet_impala b]                                                                                                         |
+| |     partitions=1/1 files=1 size=1.50MB                                                                                                                           |
+| |                                                                                                                                                                  |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                               |
+| |  hash predicates: c.l_partkey = a.p_partkey                                                                                                                      |
+| |  runtime filters: RF004 <- a.p_partkey                                                                                                                           |
+| |                                                                                                                                                                  |
+| |--09:EXCHANGE [BROADCAST]                                                                                                                                         |
+| |  |                                                                                                                                                               |
+| |  00:SCAN HDFS [default.p_part_star_parquet_impala a]                                                                                                             |
+| |     partitions=1/1 files=1 size=13.20MB                                                                                                                          |
+| |     predicates: a.p_type = 'ECONOMY ANODIZED STEEL'                                                                                                              |
+| |                                                                                                                                                                  |
+| 02:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala c]                                                                                                    |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                            |
+|    predicates: c.o_orderdate <= '1996-12-31', c.o_orderdate >= '1995-01-01'                                                                                        |
+|    runtime filters: RF000 -> c.o_custkey, RF002 -> c.l_suppkey, RF004 -> c.l_partkey                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 56 row(s) in 3.39s
+15/04/2019 15:54:34.567
+--------------------------------------Finished QUERY 8.----------------------------------
+
+--------------------------------------STARTED  QUERY 9. ---------------------------------
+15/04/2019 15:54:34.575
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select nation, o_year, sum(amount) as sum_profit from ( select b.n_name as nation, year(to_date(c.o_orderdate)) as o_year, c.l_extendedprice * (1 - c.l_discount) - d.ps_supplycost * c.l_quantity as amount from p_part_star_parquet_impala a, s_supplier_star_parquet_impala b, lo_lineitem_orders_star_parquet_impala c, ps_partsupp_star_parquet_impala d where b.s_suppkey = c.l_suppkey and d.ps_suppkey = c.l_suppkey and d.ps_partkey = c.l_partkey and a.p_partkey = c.l_partkey and a.p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                      |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=123.88MB                                                                                                                  |
+| Per-Host Resource Estimates: Memory=1.04GB                                                                                                                          |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                  |
+| default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala, default.ps_partsupp_star_parquet_impala, default.s_supplier_star_parquet_impala |
+|                                                                                                                                                                     |
+| PLAN-ROOT SINK                                                                                                                                                      |
+| |                                                                                                                                                                   |
+| 14:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                 |
+| |  order by: nation ASC, o_year DESC                                                                                                                                |
+| |                                                                                                                                                                   |
+| 08:SORT                                                                                                                                                             |
+| |  order by: nation ASC, o_year DESC                                                                                                                                |
+| |                                                                                                                                                                   |
+| 13:AGGREGATE [FINALIZE]                                                                                                                                             |
+| |  output: sum:merge(amount)                                                                                                                                        |
+| |  group by: nation, o_year                                                                                                                                         |
+| |                                                                                                                                                                   |
+| 12:EXCHANGE [HASH(nation,o_year)]                                                                                                                                   |
+| |                                                                                                                                                                   |
+| 07:AGGREGATE [STREAMING]                                                                                                                                            |
+| |  output: sum(c.l_extendedprice * (1 - c.l_discount) - d.ps_supplycost * c.l_quantity)                                                                             |
+| |  group by: b.n_name, year(to_date(c.o_orderdate))                                                                                                                 |
+| |                                                                                                                                                                   |
+| 06:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                                |
+| |  hash predicates: c.l_partkey = d.ps_partkey, c.l_suppkey = d.ps_suppkey                                                                                          |
+| |  runtime filters: RF000 <- d.ps_partkey, RF001 <- d.ps_suppkey                                                                                                    |
+| |                                                                                                                                                                   |
+| |--11:EXCHANGE [BROADCAST]                                                                                                                                          |
+| |  |                                                                                                                                                                |
+| |  03:SCAN HDFS [default.ps_partsupp_star_parquet_impala d]                                                                                                         |
+| |     partitions=1/1 files=2 size=108.11MB                                                                                                                          |
+| |                                                                                                                                                                   |
+| 05:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                                |
+| |  hash predicates: c.l_suppkey = b.s_suppkey                                                                                                                       |
+| |  runtime filters: RF004 <- b.s_suppkey                                                                                                                            |
+| |                                                                                                                                                                   |
+| |--10:EXCHANGE [BROADCAST]                                                                                                                                          |
+| |  |                                                                                                                                                                |
+| |  01:SCAN HDFS [default.s_supplier_star_parquet_impala b]                                                                                                          |
+| |     partitions=1/1 files=1 size=1.50MB                                                                                                                            |
+| |     runtime filters: RF001 -> b.s_suppkey                                                                                                                         |
+| |                                                                                                                                                                   |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                                |
+| |  hash predicates: c.l_partkey = a.p_partkey                                                                                                                       |
+| |  runtime filters: RF006 <- a.p_partkey                                                                                                                            |
+| |                                                                                                                                                                   |
+| |--09:EXCHANGE [BROADCAST]                                                                                                                                          |
+| |  |                                                                                                                                                                |
+| |  00:SCAN HDFS [default.p_part_star_parquet_impala a]                                                                                                              |
+| |     partitions=1/1 files=1 size=13.20MB                                                                                                                           |
+| |     predicates: a.p_name LIKE '%green%'                                                                                                                           |
+| |     runtime filters: RF000 -> a.p_partkey                                                                                                                         |
+| |                                                                                                                                                                   |
+| 02:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala c]                                                                                                     |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                             |
+|    runtime filters: RF000 -> c.l_partkey, RF001 -> c.l_suppkey, RF004 -> c.l_suppkey, RF006 -> c.l_partkey                                                          |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 56 row(s) in 3.82s
+15/04/2019 15:54:38.568
+--------------------------------------Finished QUERY 9.----------------------------------
+
+--------------------------------------STARTED  QUERY 10. ---------------------------------
+15/04/2019 15:54:38.577
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select a.c_custkey, a.c_name, sum(b.l_extendedprice * (1 - b.l_discount)) as revenue, a.c_acctbal, a.n_name, a.c_address, a.c_phone, a.c_comment from c_customer_star_parquet_impala a, lo_lineitem_orders_star_parquet_impala b where a.c_custkey = b.o_custkey and b.o_orderdate >= to_date('1993-10-01') and b.o_orderdate < to_date(date_add(cast('1993-10-01' as timestamp), interval 3 month)) and b.l_returnflag = 'R' group by a.c_custkey, a.c_name, a.c_acctbal, a.c_phone, a.n_name, a.c_address, a.c_comment order by revenue desc limit 20
++--------------------------------------------------------------------------------------------------+
+| Explain String                                                                                   |
++--------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=74.75MB                                                |
+| Per-Host Resource Estimates: Memory=942.75MB                                                     |
+| WARNING: The following tables are missing relevant table and/or column statistics.               |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala           |
+|                                                                                                  |
+| PLAN-ROOT SINK                                                                                   |
+| |                                                                                                |
+| 09:MERGING-EXCHANGE [UNPARTITIONED]                                                              |
+| |  order by: sum(b.l_extendedprice * (1 - b.l_discount)) DESC                                    |
+| |  limit: 20                                                                                     |
+| |                                                                                                |
+| 04:TOP-N [LIMIT=20]                                                                              |
+| |  order by: sum(b.l_extendedprice * (1 - b.l_discount)) DESC                                    |
+| |                                                                                                |
+| 08:AGGREGATE [FINALIZE]                                                                          |
+| |  output: sum:merge(b.l_extendedprice * (1 - b.l_discount))                                     |
+| |  group by: a.c_custkey, a.c_name, a.c_acctbal, a.c_phone, a.n_name, a.c_address, a.c_comment   |
+| |                                                                                                |
+| 07:EXCHANGE [HASH(a.c_custkey,a.c_name,a.c_acctbal,a.c_phone,a.n_name,a.c_address,a.c_comment)]  |
+| |                                                                                                |
+| 03:AGGREGATE [STREAMING]                                                                         |
+| |  output: sum(b.l_extendedprice * (1 - b.l_discount))                                           |
+| |  group by: a.c_custkey, a.c_name, a.c_acctbal, a.c_phone, a.n_name, a.c_address, a.c_comment   |
+| |                                                                                                |
+| 02:HASH JOIN [INNER JOIN, PARTITIONED]                                                           |
+| |  hash predicates: b.o_custkey = a.c_custkey                                                    |
+| |  runtime filters: RF000 <- a.c_custkey                                                         |
+| |                                                                                                |
+| |--06:EXCHANGE [HASH(a.c_custkey)]                                                               |
+| |  |                                                                                             |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala a]                                       |
+| |     partitions=1/1 files=1 size=24.03MB                                                        |
+| |                                                                                                |
+| 05:EXCHANGE [HASH(b.o_custkey)]                                                                  |
+| |                                                                                                |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala b]                                  |
+|    partitions=1/1 files=6 size=763.42MB                                                          |
+|    predicates: b.l_returnflag = 'R', b.o_orderdate < '1994-01-01', b.o_orderdate >= '1993-10-01' |
+|    runtime filters: RF000 -> b.o_custkey                                                         |
++--------------------------------------------------------------------------------------------------+
+Fetched 39 row(s) in 3.81s
+15/04/2019 15:54:42.568
+--------------------------------------Finished QUERY 10.----------------------------------
+
+--------------------------------------STARTED  QUERY 11. ---------------------------------
+15/04/2019 15:54:42.576
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp_star_parquet_impala,s_supplier_star_parquet_impala where ps_suppkey = s_suppkey and n_name = 'GERMANY' group by ps_partkey
+Query submitted at: 2019-04-15 15:54:42 (Coordinator: http://bae7c8623cc0:25000)
+ERROR: AnalysisException: Table already exists: default.q11_part_tmp_cached
+
+Could not execute command: create view q11_part_tmp_cached as select ps_partkey,sum(ps_supplycost * ps_availqty) as part_value from ps_partsupp_star_parquet_impala,s_supplier_star_parquet_impala where ps_suppkey = s_suppkey and n_name = 'GERMANY' group by ps_partkey
+15/04/2019 15:54:46.560
+--------------------------------------Finished QUERY 11.----------------------------------
+
+--------------------------------------STARTED  QUERY 12. ---------------------------------
+15/04/2019 15:54:46.568
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1 else 0 end) as low_line_count from lo_lineitem_orders_star_parquet_impala where l_shipmode in ('MAIL', 'SHIP') and to_date(l_commitdate) < to_date(l_receiptdate) and l_shipdate < l_commitdate and to_date(l_receiptdate) >= to_date('1994-01-01') and to_date(l_receiptdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) group by l_shipmode order by l_shipmode
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                          |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                                                                                                                       |
+| Per-Host Resource Estimates: Memory=668.00MB                                                                                                                                                            |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                      |
+| default.lo_lineitem_orders_star_parquet_impala                                                                                                                                                          |
+|                                                                                                                                                                                                         |
+| PLAN-ROOT SINK                                                                                                                                                                                          |
+| |                                                                                                                                                                                                       |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                                     |
+| |  order by: l_shipmode ASC                                                                                                                                                                             |
+| |                                                                                                                                                                                                       |
+| 02:SORT                                                                                                                                                                                                 |
+| |  order by: l_shipmode ASC                                                                                                                                                                             |
+| |                                                                                                                                                                                                       |
+| 04:AGGREGATE [FINALIZE]                                                                                                                                                                                 |
+| |  output: sum:merge(CASE WHEN o_orderpriority IN ('1-URGENT', '2-HIGH') THEN 1 ELSE 0 END), sum:merge(CASE WHEN o_orderpriority != '1-URGENT' AND o_orderpriority != '2-HIGH' THEN 1 ELSE 0 END)       |
+| |  group by: l_shipmode                                                                                                                                                                                 |
+| |                                                                                                                                                                                                       |
+| 03:EXCHANGE [HASH(l_shipmode)]                                                                                                                                                                          |
+| |                                                                                                                                                                                                       |
+| 01:AGGREGATE [STREAMING]                                                                                                                                                                                |
+| |  output: sum(CASE WHEN o_orderpriority IN ('1-URGENT', '2-HIGH') THEN 1 ELSE 0 END), sum(CASE WHEN o_orderpriority != '1-URGENT' AND o_orderpriority != '2-HIGH' THEN 1 ELSE 0 END)                   |
+| |  group by: l_shipmode                                                                                                                                                                                 |
+| |                                                                                                                                                                                                       |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                                                                           |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                                                                 |
+|    predicates: l_shipmode IN ('MAIL', 'SHIP'), l_shipdate < l_commitdate, to_date(l_receiptdate) < '1995-01-01', to_date(l_receiptdate) >= '1994-01-01', to_date(l_commitdate) < to_date(l_receiptdate) |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:46.746
+--------------------------------------Finished QUERY 12.----------------------------------
+
+--------------------------------------STARTED  QUERY 13. ---------------------------------
+15/04/2019 15:54:46.754
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select c_count, count(*) as custdist from ( select c_custkey, count(distinct o_orderkey) as c_count from c_customer_star_parquet_impala left outer join lo_lineitem_orders_star_parquet_impala on c_custkey = o_custkey and o_orderkey is not null and o_comment not like '%special%requests%' group by c_custkey )as c_orders group by c_count order by custdist desc, c_count desc
++----------------------------------------------------------------------------------------+
+| Explain String                                                                         |
++----------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=216.75MB                                     |
+| Per-Host Resource Estimates: Memory=1.04GB                                             |
+| WARNING: The following tables are missing relevant table and/or column statistics.     |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala |
+|                                                                                        |
+| PLAN-ROOT SINK                                                                         |
+| |                                                                                      |
+| 15:MERGING-EXCHANGE [UNPARTITIONED]                                                    |
+| |  order by: count(*) DESC, c_count DESC                                               |
+| |                                                                                      |
+| 06:SORT                                                                                |
+| |  order by: count(*) DESC, c_count DESC                                               |
+| |                                                                                      |
+| 14:AGGREGATE [FINALIZE]                                                                |
+| |  output: count:merge(*)                                                              |
+| |  group by: c_count                                                                   |
+| |                                                                                      |
+| 13:EXCHANGE [HASH(c_count)]                                                            |
+| |                                                                                      |
+| 05:AGGREGATE [STREAMING]                                                               |
+| |  output: count(*)                                                                    |
+| |  group by: count(o_orderkey)                                                         |
+| |                                                                                      |
+| 12:AGGREGATE [FINALIZE]                                                                |
+| |  output: count:merge(o_orderkey)                                                     |
+| |  group by: c_custkey                                                                 |
+| |                                                                                      |
+| 11:EXCHANGE [HASH(c_custkey)]                                                          |
+| |                                                                                      |
+| 04:AGGREGATE [STREAMING]                                                               |
+| |  output: count(o_orderkey)                                                           |
+| |  group by: c_custkey                                                                 |
+| |                                                                                      |
+| 10:AGGREGATE                                                                           |
+| |  group by: c_custkey, o_orderkey                                                     |
+| |                                                                                      |
+| 09:EXCHANGE [HASH(c_custkey,o_orderkey)]                                               |
+| |                                                                                      |
+| 03:AGGREGATE [STREAMING]                                                               |
+| |  group by: c_custkey, o_orderkey                                                     |
+| |                                                                                      |
+| 02:HASH JOIN [RIGHT OUTER JOIN, PARTITIONED]                                           |
+| |  hash predicates: o_custkey = c_custkey                                              |
+| |  runtime filters: RF000 <- c_custkey                                                 |
+| |                                                                                      |
+| |--08:EXCHANGE [HASH(c_custkey)]                                                       |
+| |  |                                                                                   |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala]                               |
+| |     partitions=1/1 files=1 size=24.03MB                                              |
+| |                                                                                      |
+| 07:EXCHANGE [HASH(o_custkey)]                                                          |
+| |                                                                                      |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                          |
+|    partitions=1/1 files=6 size=763.42MB                                                |
+|    predicates: o_orderkey IS NOT NULL, NOT o_comment LIKE '%special%requests%'         |
+|    runtime filters: RF000 -> o_custkey                                                 |
++----------------------------------------------------------------------------------------+
+Fetched 56 row(s) in 0.01s
+15/04/2019 15:54:46.923
+--------------------------------------Finished QUERY 13.----------------------------------
+
+--------------------------------------STARTED  QUERY 14. ---------------------------------
+15/04/2019 15:54:46.932
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from lo_lineitem_orders_star_parquet_impala, p_part_star_parquet_impala where l_partkey = p_partkey and to_date(l_shipdate) >= to_date('1995-09-01') and to_date(l_shipdate) < to_date(date_add(cast('1995-09-01' as timestamp), interval 1 month))
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=4.88MB                                                                                                       |
+| Per-Host Resource Estimates: Memory=392.88MB                                                                                                           |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                     |
+| default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala                                                                     |
+|                                                                                                                                                        |
+| PLAN-ROOT SINK                                                                                                                                         |
+| |                                                                                                                                                      |
+| 07:AGGREGATE [FINALIZE]                                                                                                                                |
+| |  output: sum:merge(CASE WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum:merge(l_extendedprice * (1 - l_discount)) |
+| |                                                                                                                                                      |
+| 06:EXCHANGE [UNPARTITIONED]                                                                                                                            |
+| |                                                                                                                                                      |
+| 03:AGGREGATE                                                                                                                                           |
+| |  output: sum(CASE WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum(l_extendedprice * (1 - l_discount))             |
+| |                                                                                                                                                      |
+| 02:HASH JOIN [INNER JOIN, PARTITIONED]                                                                                                                 |
+| |  hash predicates: l_partkey = p_partkey                                                                                                              |
+| |  runtime filters: RF000 <- p_partkey                                                                                                                 |
+| |                                                                                                                                                      |
+| |--05:EXCHANGE [HASH(p_partkey)]                                                                                                                       |
+| |  |                                                                                                                                                   |
+| |  01:SCAN HDFS [default.p_part_star_parquet_impala]                                                                                                   |
+| |     partitions=1/1 files=1 size=13.20MB                                                                                                              |
+| |                                                                                                                                                      |
+| 04:EXCHANGE [HASH(l_partkey)]                                                                                                                          |
+| |                                                                                                                                                      |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                          |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                |
+|    predicates: to_date(l_shipdate) < '1995-10-01', to_date(l_shipdate) >= '1995-09-01'                                                                 |
+|    runtime filters: RF000 -> l_partkey                                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 30 row(s) in 3.48s
+15/04/2019 15:54:50.573
+--------------------------------------Finished QUERY 14.----------------------------------
+
+--------------------------------------STARTED  QUERY 15. ---------------------------------
+15/04/2019 15:54:50.582
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: create view v_revenue_star (supplier_no, total_revenue) as select l_suppkey, sum(l_extendedprice * (1 - l_discount)) from lo_lineitem_orders_star_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and l_shipdate < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey
+Query submitted at: 2019-04-15 15:54:50 (Coordinator: http://bae7c8623cc0:25000)
+ERROR: AnalysisException: Table already exists: default.v_revenue_star
+
+Could not execute command: create view v_revenue_star (supplier_no, total_revenue) as select l_suppkey, sum(l_extendedprice * (1 - l_discount)) from lo_lineitem_orders_star_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and l_shipdate < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey
+15/04/2019 15:54:54.566
+--------------------------------------Finished QUERY 15.----------------------------------
+
+--------------------------------------STARTED  QUERY 16. ---------------------------------
+15/04/2019 15:54:54.575
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select p_brand, p_type, p_size, count(distinct ps_suppkey) as supplier_cnt from ps_partsupp_star_parquet_impala, p_part_star_parquet_impala where p_partkey = ps_partkey and p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%'  and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and ps_suppkey not in ( select s_suppkey from s_supplier_star_parquet_impala where s_comment like '%Customer%Complaints%' ) group by p_brand, p_type, p_size order by supplier_cnt desc, p_brand, p_type, p_size limit 20000
++-----------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                        |
++-----------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=141.06MB                                                                    |
+| Per-Host Resource Estimates: Memory=773.86MB                                                                          |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                    |
+| default.p_part_star_parquet_impala, default.ps_partsupp_star_parquet_impala, default.s_supplier_star_parquet_impala   |
+|                                                                                                                       |
+| PLAN-ROOT SINK                                                                                                        |
+| |                                                                                                                     |
+| 14:MERGING-EXCHANGE [UNPARTITIONED]                                                                                   |
+| |  order by: count(ps_suppkey) DESC, p_brand ASC, p_type ASC, p_size ASC                                              |
+| |  limit: 20000                                                                                                       |
+| |                                                                                                                     |
+| 07:TOP-N [LIMIT=20000]                                                                                                |
+| |  order by: count(ps_suppkey) DESC, p_brand ASC, p_type ASC, p_size ASC                                              |
+| |                                                                                                                     |
+| 13:AGGREGATE [FINALIZE]                                                                                               |
+| |  output: count:merge(ps_suppkey)                                                                                    |
+| |  group by: p_brand, p_type, p_size                                                                                  |
+| |                                                                                                                     |
+| 12:EXCHANGE [HASH(p_brand,p_type,p_size)]                                                                             |
+| |                                                                                                                     |
+| 06:AGGREGATE [STREAMING]                                                                                              |
+| |  output: count(ps_suppkey)                                                                                          |
+| |  group by: p_brand, p_type, p_size                                                                                  |
+| |                                                                                                                     |
+| 11:AGGREGATE                                                                                                          |
+| |  group by: p_brand, p_type, p_size, ps_suppkey                                                                      |
+| |                                                                                                                     |
+| 10:EXCHANGE [HASH(p_brand,p_type,p_size,ps_suppkey)]                                                                  |
+| |                                                                                                                     |
+| 05:AGGREGATE [STREAMING]                                                                                              |
+| |  group by: p_brand, p_type, p_size, ps_suppkey                                                                      |
+| |                                                                                                                     |
+| 04:HASH JOIN [NULL AWARE LEFT ANTI JOIN, BROADCAST]                                                                   |
+| |  hash predicates: ps_suppkey = s_suppkey                                                                            |
+| |                                                                                                                     |
+| |--09:EXCHANGE [BROADCAST]                                                                                            |
+| |  |                                                                                                                  |
+| |  02:SCAN HDFS [default.s_supplier_star_parquet_impala]                                                              |
+| |     partitions=1/1 files=1 size=1.50MB                                                                              |
+| |     predicates: s_comment LIKE '%Customer%Complaints%'                                                              |
+| |                                                                                                                     |
+| 03:HASH JOIN [INNER JOIN, BROADCAST]                                                                                  |
+| |  hash predicates: ps_partkey = p_partkey                                                                            |
+| |  runtime filters: RF000 <- p_partkey                                                                                |
+| |                                                                                                                     |
+| |--08:EXCHANGE [BROADCAST]                                                                                            |
+| |  |                                                                                                                  |
+| |  01:SCAN HDFS [default.p_part_star_parquet_impala]                                                                  |
+| |     partitions=1/1 files=1 size=13.20MB                                                                             |
+| |     predicates: p_brand != 'Brand#45', p_size IN (49, 14, 23, 45, 19, 3, 36, 9), NOT p_type LIKE 'MEDIUM POLISHED%' |
+| |                                                                                                                     |
+| 00:SCAN HDFS [default.ps_partsupp_star_parquet_impala]                                                                |
+|    partitions=1/1 files=2 size=108.11MB                                                                               |
+|    runtime filters: RF000 -> ps_partkey                                                                               |
++-----------------------------------------------------------------------------------------------------------------------+
+Fetched 54 row(s) in 0.02s
+15/04/2019 15:54:54.769
+--------------------------------------Finished QUERY 16.----------------------------------
+
+--------------------------------------STARTED  QUERY 17. ---------------------------------
+15/04/2019 15:54:54.778
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice) / 7.0 as avg_yearly from lo_lineitem_orders_star_parquet_impala, p_part_star_parquet_impala where p_partkey = l_partkey and  p_brand = 'Brand#23' and p_container = 'MED BOX'  and l_quantity < ( select 0.2 * avg(l_quantity) from lo_lineitem_orders_star_parquet_impala where l_partkey = p_partkey )
++-----------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                            |
++-----------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=110.94MB                                                        |
+| Per-Host Resource Estimates: Memory=780.94MB                                                              |
+| WARNING: The following tables are missing relevant table and/or column statistics.                        |
+| default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala                        |
+|                                                                                                           |
+| PLAN-ROOT SINK                                                                                            |
+| |                                                                                                         |
+| 12:AGGREGATE [FINALIZE]                                                                                   |
+| |  output: sum:merge(l_extendedprice)                                                                     |
+| |                                                                                                         |
+| 11:EXCHANGE [UNPARTITIONED]                                                                               |
+| |                                                                                                         |
+| 06:AGGREGATE                                                                                              |
+| |  output: sum(l_extendedprice)                                                                           |
+| |                                                                                                         |
+| 05:HASH JOIN [LEFT SEMI JOIN, PARTITIONED]                                                                |
+| |  hash predicates: p_partkey = l_partkey                                                                 |
+| |  other join predicates: l_quantity < 0.2 * avg(l_quantity)                                              |
+| |  runtime filters: RF000 <- l_partkey                                                                    |
+| |                                                                                                         |
+| |--09:AGGREGATE [FINALIZE]                                                                                |
+| |  |  output: avg:merge(l_quantity)                                                                       |
+| |  |  group by: l_partkey                                                                                 |
+| |  |                                                                                                      |
+| |  08:EXCHANGE [HASH(l_partkey)]                                                                          |
+| |  |                                                                                                      |
+| |  03:AGGREGATE [STREAMING]                                                                               |
+| |  |  output: avg(l_quantity)                                                                             |
+| |  |  group by: l_partkey                                                                                 |
+| |  |                                                                                                      |
+| |  02:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                          |
+| |     partitions=1/1 files=6 size=763.42MB                                                                |
+| |                                                                                                         |
+| 10:EXCHANGE [HASH(p_partkey)]                                                                             |
+| |                                                                                                         |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                                      |
+| |  hash predicates: l_partkey = p_partkey                                                                 |
+| |  runtime filters: RF002 <- p_partkey                                                                    |
+| |                                                                                                         |
+| |--07:EXCHANGE [BROADCAST]                                                                                |
+| |  |                                                                                                      |
+| |  01:SCAN HDFS [default.p_part_star_parquet_impala]                                                      |
+| |     partitions=1/1 files=1 size=13.20MB                                                                 |
+| |     predicates: p_container = 'MED BOX', p_brand = 'Brand#23'                                           |
+| |     runtime filters: RF000 -> p_partkey                                                                 |
+| |                                                                                                         |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                             |
+|    partitions=1/1 files=6 size=763.42MB                                                                   |
+|    runtime filters: RF000 -> default.lo_lineitem_orders_star_parquet_impala.l_partkey, RF002 -> l_partkey |
++-----------------------------------------------------------------------------------------------------------+
+Fetched 49 row(s) in 0.01s
+15/04/2019 15:54:54.975
+--------------------------------------Finished QUERY 17.----------------------------------
+
+--------------------------------------STARTED  QUERY 18. ---------------------------------
+15/04/2019 15:54:54.984
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity) from c_customer_star_parquet_impala, lo_lineitem_orders_star_parquet_impala where o_orderkey in ( select l_orderkey from lo_lineitem_orders_star_parquet_impala group by l_orderkey having sum(l_quantity) > 300 ) and c_custkey = o_custkey group by c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice order by o_totalprice desc, o_orderdate limit 100
++----------------------------------------------------------------------------------------+
+| Explain String                                                                         |
++----------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=183.50MB                                     |
+| Per-Host Resource Estimates: Memory=1.17GB                                             |
+| WARNING: The following tables are missing relevant table and/or column statistics.     |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala |
+|                                                                                        |
+| PLAN-ROOT SINK                                                                         |
+| |                                                                                      |
+| 14:MERGING-EXCHANGE [UNPARTITIONED]                                                    |
+| |  order by: o_totalprice DESC, o_orderdate ASC                                        |
+| |  limit: 100                                                                          |
+| |                                                                                      |
+| 07:TOP-N [LIMIT=100]                                                                   |
+| |  order by: o_totalprice DESC, o_orderdate ASC                                        |
+| |                                                                                      |
+| 13:AGGREGATE [FINALIZE]                                                                |
+| |  output: sum:merge(l_quantity)                                                       |
+| |  group by: c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice                  |
+| |                                                                                      |
+| 12:EXCHANGE [HASH(c_name,c_custkey,o_orderkey,o_orderdate,o_totalprice)]               |
+| |                                                                                      |
+| 06:AGGREGATE [STREAMING]                                                               |
+| |  output: sum(l_quantity)                                                             |
+| |  group by: c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice                  |
+| |                                                                                      |
+| 05:HASH JOIN [LEFT SEMI JOIN, PARTITIONED]                                             |
+| |  hash predicates: o_orderkey = l_orderkey                                            |
+| |  runtime filters: RF000 <- l_orderkey                                                |
+| |                                                                                      |
+| |--10:AGGREGATE [FINALIZE]                                                             |
+| |  |  output: sum:merge(l_quantity)                                                    |
+| |  |  group by: l_orderkey                                                             |
+| |  |  having: sum(l_quantity) > 300                                                    |
+| |  |                                                                                   |
+| |  09:EXCHANGE [HASH(l_orderkey)]                                                      |
+| |  |                                                                                   |
+| |  03:AGGREGATE [STREAMING]                                                            |
+| |  |  output: sum(l_quantity)                                                          |
+| |  |  group by: l_orderkey                                                             |
+| |  |                                                                                   |
+| |  02:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                       |
+| |     partitions=1/1 files=6 size=763.42MB                                             |
+| |                                                                                      |
+| 11:EXCHANGE [HASH(o_orderkey)]                                                         |
+| |                                                                                      |
+| 04:HASH JOIN [INNER JOIN, BROADCAST]                                                   |
+| |  hash predicates: o_custkey = c_custkey                                              |
+| |  runtime filters: RF002 <- c_custkey                                                 |
+| |                                                                                      |
+| |--08:EXCHANGE [BROADCAST]                                                             |
+| |  |                                                                                   |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala]                               |
+| |     partitions=1/1 files=1 size=24.03MB                                              |
+| |                                                                                      |
+| 01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                          |
+|    partitions=1/1 files=6 size=763.42MB                                                |
+|    runtime filters: RF000 -> o_orderkey, RF002 -> o_custkey                            |
++----------------------------------------------------------------------------------------+
+Fetched 56 row(s) in 0.01s
+15/04/2019 15:54:55.174
+--------------------------------------Finished QUERY 18.----------------------------------
+
+--------------------------------------STARTED  QUERY 19. ---------------------------------
+15/04/2019 15:54:55.183
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice * (1 - l_discount) ) as revenue from lo_lineitem_orders_star_parquet_impala, p_part_star_parquet_impala where ( p_partkey = l_partkey and p_brand = 'Brand#12' and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') and l_quantity >= 1 and l_quantity <= 1 + 10 and p_size between 1 and 5 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON' ) or ( p_partkey = l_partkey and p_brand = 'Brand#23' and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') and l_quantity >= 10 and l_quantity <= 10 + 10 and p_size between 1 and 10 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON' ) or ( p_partkey = l_partkey and p_brand = 'Brand#34' and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') and l_quantity >= 20 and l_quantity <= 20 + 10 and p_size between 1 and 15 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON' )
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=2.94MB                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Per-Host Resource Estimates: Memory=598.94MB                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                                                                                                                                                                                                                                            |
+| default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala                                                                                                                                                                                                                                                                                                                                                                                            |
+|                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 06:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 05:EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 03:AGGREGATE                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 02:HASH JOIN [INNER JOIN, BROADCAST]                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| |  hash predicates: l_partkey = p_partkey                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| |  other predicates: ((p_brand = 'Brand#12' AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') AND l_quantity >= 1 AND l_quantity <= 11 AND p_size <= 5) OR (p_brand = 'Brand#23' AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') AND l_quantity >= 10 AND l_quantity <= 20 AND p_size <= 10) OR (p_brand = 'Brand#34' AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') AND l_quantity >= 20 AND l_quantity <= 30 AND p_size <= 15)) |
+| |  runtime filters: RF000 <- p_partkey                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| |--04:EXCHANGE [BROADCAST]                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| |  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| |  01:SCAN HDFS [default.p_part_star_parquet_impala]                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| |     partitions=1/1 files=1 size=13.20MB                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| |     predicates: p_size >= 1                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 00:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|    predicates: l_shipmode IN ('AIR', 'AIR REG'), l_shipinstruct = 'DELIVER IN PERSON'                                                                                                                                                                                                                                                                                                                                                                                         |
+|    runtime filters: RF000 -> l_partkey                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 30 row(s) in 0.01s
+15/04/2019 15:54:55.381
+--------------------------------------Finished QUERY 19.----------------------------------
+
+--------------------------------------STARTED  QUERY 20. ---------------------------------
+15/04/2019 15:54:55.389
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select s_name, s_address from s_supplier_star_parquet_impala where s_suppkey in ( select ps_suppkey from ps_partsupp_star_parquet_impala where ps_partkey in ( select p_partkey from p_part_star_parquet_impala where p_name like 'forest%' ) and ps_availqty > ( select 0.5 * sum(l_quantity) from lo_lineitem_orders_star_parquet_impala where l_partkey = ps_partkey and l_suppkey = ps_suppkey and l_shipdate >= to_date('1994-01-01') and l_shipdate < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) ) ) and n_name = 'CANADA' order by s_name
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                              |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=108.88MB                                                                                                                                                                          |
+| Per-Host Resource Estimates: Memory=920.88MB                                                                                                                                                                                |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                          |
+| default.lo_lineitem_orders_star_parquet_impala, default.p_part_star_parquet_impala, default.ps_partsupp_star_parquet_impala, default.s_supplier_star_parquet_impala                                                         |
+|                                                                                                                                                                                                                             |
+| PLAN-ROOT SINK                                                                                                                                                                                                              |
+| |                                                                                                                                                                                                                           |
+| 15:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                                                         |
+| |  order by: s_name ASC                                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                           |
+| 08:SORT                                                                                                                                                                                                                     |
+| |  order by: s_name ASC                                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                           |
+| 07:HASH JOIN [RIGHT SEMI JOIN, PARTITIONED]                                                                                                                                                                                 |
+| |  hash predicates: ps_suppkey = s_suppkey                                                                                                                                                                                  |
+| |  runtime filters: RF000 <- s_suppkey                                                                                                                                                                                      |
+| |                                                                                                                                                                                                                           |
+| |--14:EXCHANGE [HASH(s_suppkey)]                                                                                                                                                                                            |
+| |  |                                                                                                                                                                                                                        |
+| |  00:SCAN HDFS [default.s_supplier_star_parquet_impala]                                                                                                                                                                    |
+| |     partitions=1/1 files=1 size=1.50MB                                                                                                                                                                                    |
+| |     predicates: n_name = 'CANADA'                                                                                                                                                                                         |
+| |                                                                                                                                                                                                                           |
+| 13:EXCHANGE [HASH(ps_suppkey)]                                                                                                                                                                                              |
+| |                                                                                                                                                                                                                           |
+| 06:HASH JOIN [RIGHT SEMI JOIN, PARTITIONED]                                                                                                                                                                                 |
+| |  hash predicates: l_partkey = ps_partkey, l_suppkey = ps_suppkey                                                                                                                                                          |
+| |  other join predicates: ps_availqty > 0.5 * sum(l_quantity)                                                                                                                                                               |
+| |  runtime filters: RF002 <- ps_partkey, RF003 <- ps_suppkey                                                                                                                                                                |
+| |                                                                                                                                                                                                                           |
+| |--12:EXCHANGE [HASH(ps_partkey,ps_suppkey)]                                                                                                                                                                                |
+| |  |                                                                                                                                                                                                                        |
+| |  05:HASH JOIN [LEFT SEMI JOIN, BROADCAST]                                                                                                                                                                                 |
+| |  |  hash predicates: ps_partkey = p_partkey                                                                                                                                                                               |
+| |  |  runtime filters: RF006 <- p_partkey                                                                                                                                                                                   |
+| |  |                                                                                                                                                                                                                        |
+| |  |--11:EXCHANGE [BROADCAST]                                                                                                                                                                                               |
+| |  |  |                                                                                                                                                                                                                     |
+| |  |  02:SCAN HDFS [default.p_part_star_parquet_impala]                                                                                                                                                                     |
+| |  |     partitions=1/1 files=1 size=13.20MB                                                                                                                                                                                |
+| |  |     predicates: p_name LIKE 'forest%'                                                                                                                                                                                  |
+| |  |                                                                                                                                                                                                                        |
+| |  01:SCAN HDFS [default.ps_partsupp_star_parquet_impala]                                                                                                                                                                   |
+| |     partitions=1/1 files=2 size=108.11MB                                                                                                                                                                                  |
+| |     runtime filters: RF000 -> ps_suppkey, RF006 -> ps_partkey                                                                                                                                                             |
+| |                                                                                                                                                                                                                           |
+| 10:AGGREGATE [FINALIZE]                                                                                                                                                                                                     |
+| |  output: sum:merge(l_quantity)                                                                                                                                                                                            |
+| |  group by: l_partkey, l_suppkey                                                                                                                                                                                           |
+| |                                                                                                                                                                                                                           |
+| 09:EXCHANGE [HASH(l_partkey,l_suppkey)]                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                           |
+| 04:AGGREGATE [STREAMING]                                                                                                                                                                                                    |
+| |  output: sum(l_quantity)                                                                                                                                                                                                  |
+| |  group by: l_partkey, l_suppkey                                                                                                                                                                                           |
+| |                                                                                                                                                                                                                           |
+| 03:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                                                                                                                               |
+|    partitions=1/1 files=6 size=763.42MB                                                                                                                                                                                     |
+|    predicates: l_shipdate < '1995-01-01', l_shipdate >= '1994-01-01'                                                                                                                                                        |
+|    runtime filters: RF000 -> default.lo_lineitem_orders_star_parquet_impala.l_suppkey, RF002 -> default.lo_lineitem_orders_star_parquet_impala.l_partkey, RF003 -> default.lo_lineitem_orders_star_parquet_impala.l_suppkey |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 60 row(s) in 0.02s
+15/04/2019 15:54:55.589
+--------------------------------------Finished QUERY 20.----------------------------------
+
+--------------------------------------STARTED  QUERY 21. ---------------------------------
+15/04/2019 15:54:55.597
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select s_name, count(*) as numwait from s_supplier_star_parquet_impala, lo_lineitem_orders_star_parquet_impala l1 where s_suppkey = l1.l_suppkey and  l1.o_orderstatus = 'F' and l1.l_receiptdate > l1.l_commitdate and exists ( select * from lo_lineitem_orders_star_parquet_impala l2 where l2.l_orderkey = l1.l_orderkey and l2.l_suppkey <> l1.l_suppkey ) and not exists ( select * from lo_lineitem_orders_star_parquet_impala l3 where l3.l_orderkey = l1.l_orderkey and l3.l_suppkey <> l1.l_suppkey and l3.l_receiptdate > l3.l_commitdate ) and  n_name = 'SAUDI ARABIA' group by s_name order by numwait desc, s_name limit 100
++----------------------------------------------------------------------------------------+
+| Explain String                                                                         |
++----------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=98.44MB                                      |
+| Per-Host Resource Estimates: Memory=1.19GB                                             |
+| WARNING: The following tables are missing relevant table and/or column statistics.     |
+| default.lo_lineitem_orders_star_parquet_impala, default.s_supplier_star_parquet_impala |
+|                                                                                        |
+| PLAN-ROOT SINK                                                                         |
+| |                                                                                      |
+| 15:MERGING-EXCHANGE [UNPARTITIONED]                                                    |
+| |  order by: count(*) DESC, s_name ASC                                                 |
+| |  limit: 100                                                                          |
+| |                                                                                      |
+| 08:TOP-N [LIMIT=100]                                                                   |
+| |  order by: count(*) DESC, s_name ASC                                                 |
+| |                                                                                      |
+| 14:AGGREGATE [FINALIZE]                                                                |
+| |  output: count:merge(*)                                                              |
+| |  group by: s_name                                                                    |
+| |                                                                                      |
+| 13:EXCHANGE [HASH(s_name)]                                                             |
+| |                                                                                      |
+| 07:AGGREGATE [STREAMING]                                                               |
+| |  output: count(*)                                                                    |
+| |  group by: s_name                                                                    |
+| |                                                                                      |
+| 06:HASH JOIN [LEFT ANTI JOIN, PARTITIONED]                                             |
+| |  hash predicates: l1.l_orderkey = l3.l_orderkey                                      |
+| |  other join predicates: l3.l_suppkey != l1.l_suppkey                                 |
+| |                                                                                      |
+| |--12:EXCHANGE [HASH(l3.l_orderkey)]                                                   |
+| |  |                                                                                   |
+| |  03:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala l3]                    |
+| |     partitions=1/1 files=6 size=763.42MB                                             |
+| |     predicates: l3.l_receiptdate > l3.l_commitdate                                   |
+| |                                                                                      |
+| 05:HASH JOIN [RIGHT SEMI JOIN, PARTITIONED]                                            |
+| |  hash predicates: l2.l_orderkey = l1.l_orderkey                                      |
+| |  other join predicates: l2.l_suppkey != l1.l_suppkey                                 |
+| |  runtime filters: RF000 <- l1.l_orderkey                                             |
+| |                                                                                      |
+| |--11:EXCHANGE [HASH(l1.l_orderkey)]                                                   |
+| |  |                                                                                   |
+| |  04:HASH JOIN [INNER JOIN, BROADCAST]                                                |
+| |  |  hash predicates: l1.l_suppkey = s_suppkey                                        |
+| |  |  runtime filters: RF002 <- s_suppkey                                              |
+| |  |                                                                                   |
+| |  |--09:EXCHANGE [BROADCAST]                                                          |
+| |  |  |                                                                                |
+| |  |  00:SCAN HDFS [default.s_supplier_star_parquet_impala]                            |
+| |  |     partitions=1/1 files=1 size=1.50MB                                            |
+| |  |     predicates: n_name = 'SAUDI ARABIA'                                           |
+| |  |                                                                                   |
+| |  01:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala l1]                    |
+| |     partitions=1/1 files=6 size=763.42MB                                             |
+| |     predicates: l1.o_orderstatus = 'F', l1.l_receiptdate > l1.l_commitdate           |
+| |     runtime filters: RF002 -> l1.l_suppkey                                           |
+| |                                                                                      |
+| 10:EXCHANGE [HASH(l2.l_orderkey)]                                                      |
+| |                                                                                      |
+| 02:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala l2]                       |
+|    partitions=1/1 files=6 size=763.42MB                                                |
+|    runtime filters: RF000 -> l2.l_orderkey                                             |
++----------------------------------------------------------------------------------------+
+Fetched 61 row(s) in 0.02s
+15/04/2019 15:54:55.797
+--------------------------------------Finished QUERY 21.----------------------------------
+
+--------------------------------------STARTED  QUERY 22. ---------------------------------
+15/04/2019 15:54:55.805
+Starting Impala Shell without Kerberos authentication
+Connected to bae7c8623cc0:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select cntrycode, count(*) as numcust, sum(c_acctbal) as totacctbal from ( select substring(c_phone , 1 , 2) as cntrycode, c_acctbal from c_customer_star_parquet_impala where substring (c_phone , 1 , 2) in ('13','31','23','29','30','18','17') and c_acctbal > ( select avg(c_acctbal) from c_customer_star_parquet_impala where c_acctbal > 0.00 and substring (c_phone , 1 , 2) in ('13','31','23','29','30','18','17') ) and not exists ( select * from lo_lineitem_orders_star_parquet_impala where o_custkey = c_custkey ) ) as custsale group by cntrycode order by cntrycode
++---------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                |
++---------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=81.94MB                                                             |
+| Per-Host Resource Estimates: Memory=569.94MB                                                                  |
+| WARNING: The following tables are missing relevant table and/or column statistics.                            |
+| default.c_customer_star_parquet_impala, default.lo_lineitem_orders_star_parquet_impala                        |
+|                                                                                                               |
+| PLAN-ROOT SINK                                                                                                |
+| |                                                                                                             |
+| 15:MERGING-EXCHANGE [UNPARTITIONED]                                                                           |
+| |  order by: cntrycode ASC                                                                                    |
+| |                                                                                                             |
+| 07:SORT                                                                                                       |
+| |  order by: cntrycode ASC                                                                                    |
+| |                                                                                                             |
+| 14:AGGREGATE [FINALIZE]                                                                                       |
+| |  output: count:merge(*), sum:merge(c_acctbal)                                                               |
+| |  group by: cntrycode                                                                                        |
+| |                                                                                                             |
+| 13:EXCHANGE [HASH(cntrycode)]                                                                                 |
+| |                                                                                                             |
+| 06:AGGREGATE [STREAMING]                                                                                      |
+| |  output: count(*), sum(c_acctbal)                                                                           |
+| |  group by: substring(c_phone, 1, 2)                                                                         |
+| |                                                                                                             |
+| 05:HASH JOIN [RIGHT ANTI JOIN, PARTITIONED]                                                                   |
+| |  hash predicates: o_custkey = c_custkey                                                                     |
+| |                                                                                                             |
+| |--12:EXCHANGE [HASH(c_custkey)]                                                                              |
+| |  |                                                                                                          |
+| |  04:NESTED LOOP JOIN [INNER JOIN, BROADCAST]                                                                |
+| |  |  predicates: c_acctbal > avg(c_acctbal)                                                                  |
+| |  |                                                                                                          |
+| |  |--10:EXCHANGE [BROADCAST]                                                                                 |
+| |  |  |                                                                                                       |
+| |  |  09:AGGREGATE [FINALIZE]                                                                                 |
+| |  |  |  output: avg:merge(c_acctbal)                                                                         |
+| |  |  |                                                                                                       |
+| |  |  08:EXCHANGE [UNPARTITIONED]                                                                             |
+| |  |  |                                                                                                       |
+| |  |  02:AGGREGATE                                                                                            |
+| |  |  |  output: avg(c_acctbal)                                                                               |
+| |  |  |                                                                                                       |
+| |  |  01:SCAN HDFS [default.c_customer_star_parquet_impala]                                                   |
+| |  |     partitions=1/1 files=1 size=24.03MB                                                                  |
+| |  |     predicates: c_acctbal > 0.00, substring(c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17') |
+| |  |                                                                                                          |
+| |  00:SCAN HDFS [default.c_customer_star_parquet_impala]                                                      |
+| |     partitions=1/1 files=1 size=24.03MB                                                                     |
+| |     predicates: substring(c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17')                      |
+| |                                                                                                             |
+| 11:EXCHANGE [HASH(o_custkey)]                                                                                 |
+| |                                                                                                             |
+| 03:SCAN HDFS [default.lo_lineitem_orders_star_parquet_impala]                                                 |
+|    partitions=1/1 files=6 size=763.42MB                                                                       |
++---------------------------------------------------------------------------------------------------------------+
+Fetched 53 row(s) in 0.02s
+15/04/2019 15:54:56.001
+--------------------------------------Finished QUERY 22.----------------------------------
+
+15/04/2019 15:54:56.008

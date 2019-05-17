@@ -1,0 +1,784 @@
+-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------
+-------------------------------------- impala_denormal_query_sf1_result_explain.txt ---------------------------------
+-------------------------------------- IMPALA QUERY NORMALIZED ---------------------------------
+15/04/2019 15:54:34.232
+
+
+--------------------------------------  Invalidate Schema  ---------------------------------
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: INVALIDATE METADATA
+Query submitted at: 2019-04-15 15:54:34 (Coordinator: http://bddf94c97b8d:25000)
+Query progress can be monitored at: http://bddf94c97b8d:25000/query_plan?query_id=734a9baa4dc63451:d2829e0d00000000
+Fetched 0 row(s) in 4.16s
+
+--------------------------------------STARTED QUERY 1. ---------------------------------
+15/04/2019 15:54:38.575
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select l_returnflag, l_linestatus, sum(l_quantity) as sum_qty, sum(l_extendedprice) as sum_base_price, sum(l_extendedprice*(1-l_discount)) as sum_disc_price, sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge, avg(l_quantity) as avg_qty, avg(l_extendedprice) as avg_price, avg(l_discount) as avg_disc, count(*) as count_order from denormalized_parquet_impala where to_date(l_shipdate) <= to_date(date_sub(cast('1998-12-01' as timestamp), interval 90 day)) group by l_returnflag, l_linestatus order by l_returnflag, l_linestatus
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                                     |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                                                                                                                                                                                  |
+| Per-Host Resource Estimates: Memory=884.00MB                                                                                                                                                                                                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                                 |
+| default.denormalized_parquet_impala                                                                                                                                                                                                                                |
+|                                                                                                                                                                                                                                                                    |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                                                                  |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                                |
+| |  order by: l_returnflag ASC, l_linestatus ASC                                                                                                                                                                                                                    |
+| |                                                                                                                                                                                                                                                                  |
+| 02:SORT                                                                                                                                                                                                                                                            |
+| |  order by: l_returnflag ASC, l_linestatus ASC                                                                                                                                                                                                                    |
+| |                                                                                                                                                                                                                                                                  |
+| 04:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                            |
+| |  output: sum:merge(l_quantity), sum:merge(l_extendedprice), sum:merge(l_extendedprice * (1 - l_discount)), sum:merge(l_extendedprice * (1 - l_discount) * (1 + l_tax)), avg:merge(l_quantity), avg:merge(l_extendedprice), avg:merge(l_discount), count:merge(*) |
+| |  group by: l_returnflag, l_linestatus                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                                  |
+| 03:EXCHANGE [HASH(l_returnflag,l_linestatus)]                                                                                                                                                                                                                      |
+| |                                                                                                                                                                                                                                                                  |
+| 01:AGGREGATE [STREAMING]                                                                                                                                                                                                                                           |
+| |  output: sum(l_quantity), sum(l_extendedprice), sum(l_extendedprice * (1 - l_discount)), sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)), avg(l_quantity), avg(l_extendedprice), avg(l_discount), count(*)                                                 |
+| |  group by: l_returnflag, l_linestatus                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                                  |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                                                                                                                                 |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                                                                                                                             |
+|    predicates: to_date(l_shipdate) <= '1998-09-02'                                                                                                                                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 3.85s
+15/04/2019 15:54:42.598
+--------------------------------------Finished QUERY 1.---------------------------------
+
+--------------------------------------STARTED  QUERY 2. --------------------------------
+--------------------------------------Finished QUERY 2. --------------------------------
+
+--------------------------------------STARTED  QUERY 3. ---------------------------------
+15/04/2019 15:54:42.611
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select o_orderkey, sum(l_extendedprice*(1-l_discount)) as revenue, to_date(o_orderdate), o_shippriority from denormalized_parquet_impala where c_mktsegment = 'BUILDING' and o_orderdate < to_date('1995-03-15') and to_date(l_shipdate) > to_date('1995-03-15') group by o_orderkey, to_date(o_orderdate), o_shippriority order by revenue desc, to_date(o_orderdate) limit 10
++----------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                           |
++----------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=68.00MB                                                        |
+| Per-Host Resource Estimates: Memory=872.00MB                                                             |
+| WARNING: The following tables are missing relevant table and/or column statistics.                       |
+| default.denormalized_parquet_impala                                                                      |
+|                                                                                                          |
+| PLAN-ROOT SINK                                                                                           |
+| |                                                                                                        |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                      |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC, to_date(o_orderdate) ASC                      |
+| |  limit: 10                                                                                             |
+| |                                                                                                        |
+| 02:TOP-N [LIMIT=10]                                                                                      |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC, to_date(o_orderdate) ASC                      |
+| |                                                                                                        |
+| 04:AGGREGATE [FINALIZE]                                                                                  |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                 |
+| |  group by: o_orderkey, to_date(o_orderdate), o_shippriority                                            |
+| |                                                                                                        |
+| 03:EXCHANGE [HASH(o_orderkey,to_date(o_orderdate),o_shippriority)]                                       |
+| |                                                                                                        |
+| 01:AGGREGATE [STREAMING]                                                                                 |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                       |
+| |  group by: o_orderkey, to_date(o_orderdate), o_shippriority                                            |
+| |                                                                                                        |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                       |
+|    partitions=1/1 files=15 size=1.49GB                                                                   |
+|    predicates: c_mktsegment = 'BUILDING', o_orderdate < '1995-03-15', to_date(l_shipdate) > '1995-03-15' |
++----------------------------------------------------------------------------------------------------------+
+Fetched 27 row(s) in 0.01s
+15/04/2019 15:54:42.791
+--------------------------------------Finished QUERY 3.----------------------------------
+
+--------------------------------------STARTED  QUERY 4. ---------------------------------
+15/04/2019 15:54:42.799
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select o_orderpriority, count (distinct o_orderkey) as order_count from denormalized_parquet_impala where o_orderdate >= to_date('1993-07-01') and to_date(o_orderdate) < to_date(date_add(cast('1993-07-01' as timestamp), interval 3 month)) and to_date(l_commitdate) < to_date(l_receiptdate ) group by o_orderpriority  order by o_orderpriority
++---------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                  |
++---------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=148.00MB                                                                              |
+| Per-Host Resource Estimates: Memory=964.00MB                                                                                    |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                              |
+| default.denormalized_parquet_impala                                                                                             |
+|                                                                                                                                 |
+| PLAN-ROOT SINK                                                                                                                  |
+| |                                                                                                                               |
+| 08:MERGING-EXCHANGE [UNPARTITIONED]                                                                                             |
+| |  order by: o_orderpriority ASC                                                                                                |
+| |                                                                                                                               |
+| 03:SORT                                                                                                                         |
+| |  order by: o_orderpriority ASC                                                                                                |
+| |                                                                                                                               |
+| 07:AGGREGATE [FINALIZE]                                                                                                         |
+| |  output: count:merge(o_orderkey)                                                                                              |
+| |  group by: o_orderpriority                                                                                                    |
+| |                                                                                                                               |
+| 06:EXCHANGE [HASH(o_orderpriority)]                                                                                             |
+| |                                                                                                                               |
+| 02:AGGREGATE [STREAMING]                                                                                                        |
+| |  output: count(o_orderkey)                                                                                                    |
+| |  group by: o_orderpriority                                                                                                    |
+| |                                                                                                                               |
+| 05:AGGREGATE                                                                                                                    |
+| |  group by: o_orderpriority, o_orderkey                                                                                        |
+| |                                                                                                                               |
+| 04:EXCHANGE [HASH(o_orderpriority,o_orderkey)]                                                                                  |
+| |                                                                                                                               |
+| 01:AGGREGATE [STREAMING]                                                                                                        |
+| |  group by: o_orderpriority, o_orderkey                                                                                        |
+| |                                                                                                                               |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                              |
+|    partitions=1/1 files=15 size=1.49GB                                                                                          |
+|    predicates: o_orderdate >= '1993-07-01', to_date(o_orderdate) < '1993-10-01', to_date(l_commitdate) < to_date(l_receiptdate) |
++---------------------------------------------------------------------------------------------------------------------------------+
+Fetched 34 row(s) in 0.01s
+15/04/2019 15:54:42.974
+--------------------------------------Finished QUERY 4.----------------------------------
+
+--------------------------------------STARTED  QUERY 5. ---------------------------------
+15/04/2019 15:54:42.982
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select n_name, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized_parquet_impala where r_name = 'ASIA' and to_date(o_orderdate) >= to_date('1994-01-01') and to_date(o_orderdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) group by n_name order by revenue desc
++-----------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                            |
++-----------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                         |
+| Per-Host Resource Estimates: Memory=708.00MB                                                              |
+| WARNING: The following tables are missing relevant table and/or column statistics.                        |
+| default.denormalized_parquet_impala                                                                       |
+|                                                                                                           |
+| PLAN-ROOT SINK                                                                                            |
+| |                                                                                                         |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                       |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                 |
+| |                                                                                                         |
+| 02:SORT                                                                                                   |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                 |
+| |                                                                                                         |
+| 04:AGGREGATE [FINALIZE]                                                                                   |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                  |
+| |  group by: n_name                                                                                       |
+| |                                                                                                         |
+| 03:EXCHANGE [HASH(n_name)]                                                                                |
+| |                                                                                                         |
+| 01:AGGREGATE [STREAMING]                                                                                  |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                        |
+| |  group by: n_name                                                                                       |
+| |                                                                                                         |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                        |
+|    partitions=1/1 files=15 size=1.49GB                                                                    |
+|    predicates: r_name = 'ASIA', to_date(o_orderdate) < '1995-01-01', to_date(o_orderdate) >= '1994-01-01' |
++-----------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:43.155
+--------------------------------------Finished QUERY 5.----------------------------------
+
+--------------------------------------STARTED  QUERY 6. ---------------------------------
+15/04/2019 15:54:43.162
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice*l_discount) as revenue from denormalized_parquet_impala where to_date(l_shipdate) >= to_date('1994-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) and l_discount between 0.06 - 0.01 and 0.06 + 0.01 and l_quantity < 24
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                            |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                                                                                                                                                                                              |
+| Per-Host Resource Estimates: Memory=372.00MB                                                                                                                                                                                                              |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                        |
+| default.denormalized_parquet_impala                                                                                                                                                                                                                       |
+|                                                                                                                                                                                                                                                           |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                                                         |
+| 03:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                   |
+| |  output: sum:merge(l_extendedprice * l_discount)                                                                                                                                                                                                        |
+| |                                                                                                                                                                                                                                                         |
+| 02:EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                               |
+| |                                                                                                                                                                                                                                                         |
+| 01:AGGREGATE                                                                                                                                                                                                                                              |
+| |  output: sum(l_extendedprice * l_discount)                                                                                                                                                                                                              |
+| |                                                                                                                                                                                                                                                         |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                                                                                                                        |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                                                                                                                    |
+|    predicates: l_discount <= 0.070000000000000006661338147750939242541790008544921875, l_discount >= 0.05000000000000000277555756156289135105907917022705078125, l_quantity < 24, to_date(l_shipdate) < '1995-01-01', to_date(l_shipdate) >= '1994-01-01' |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 18 row(s) in 0.01s
+15/04/2019 15:54:43.341
+--------------------------------------Finished QUERY 6.----------------------------------
+
+--------------------------------------STARTED  QUERY 7. ---------------------------------
+15/04/2019 15:54:43.349
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select  n2_name, n_name,  year(to_date(l_shipdate)) as l_year, sum(l_extendedprice * (1 - l_discount)) as revenue from denormalized_parquet_impala where ((n2_name = 'FRANCE' and n_name = 'GERMANY') or (n2_name = 'GERMANY' and n_name = 'FRANCE')) and to_date(l_shipdate) between to_date('1995-01-01') and to_date('1996-12-31') group by n2_name, n_name, year(to_date(l_shipdate)) order by n2_name, n_name, l_year
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                        |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                                                                                                     |
+| Per-Host Resource Estimates: Memory=708.00MB                                                                                                                                          |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                    |
+| default.denormalized_parquet_impala                                                                                                                                                   |
+|                                                                                                                                                                                       |
+| PLAN-ROOT SINK                                                                                                                                                                        |
+| |                                                                                                                                                                                     |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                   |
+| |  order by: n2_name ASC, n_name ASC, year(to_date(l_shipdate)) ASC                                                                                                                   |
+| |                                                                                                                                                                                     |
+| 02:SORT                                                                                                                                                                               |
+| |  order by: n2_name ASC, n_name ASC, year(to_date(l_shipdate)) ASC                                                                                                                   |
+| |                                                                                                                                                                                     |
+| 04:AGGREGATE [FINALIZE]                                                                                                                                                               |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                                                                                              |
+| |  group by: n2_name, n_name, year(to_date(l_shipdate))                                                                                                                               |
+| |                                                                                                                                                                                     |
+| 03:EXCHANGE [HASH(n2_name,n_name,year(to_date(l_shipdate)))]                                                                                                                          |
+| |                                                                                                                                                                                     |
+| 01:AGGREGATE [STREAMING]                                                                                                                                                              |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                                                                                                    |
+| |  group by: n2_name, n_name, year(to_date(l_shipdate))                                                                                                                               |
+| |                                                                                                                                                                                     |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                                                    |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                                                |
+|    predicates: to_date(l_shipdate) <= '1996-12-31', to_date(l_shipdate) >= '1995-01-01', ((n2_name = 'FRANCE' AND n_name = 'GERMANY') OR (n2_name = 'GERMANY' AND n_name = 'FRANCE')) |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:43.539
+--------------------------------------Finished QUERY 7.----------------------------------
+
+--------------------------------------STARTED  QUERY 8. ---------------------------------
+15/04/2019 15:54:43.548
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select o_year, sum(case when nation = 'BRAZIL' then volume else 0 end) / sum(volume) as mkt_share from ( select year(to_date(o_orderdate)) as o_year, l_extendedprice * (1-l_discount) as volume, n2_name as nation from denormalized_parquet_impala where r_name = 'AMERICA' and to_date(o_orderdate) between to_date('1995-01-01') and to_date('1996-12-31') and p_type = 'ECONOMY ANODIZED STEEL') as all_nations group by o_year order by o_year
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                   |
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=74.00MB                                                                                                |
+| Per-Host Resource Estimates: Memory=790.00MB                                                                                                     |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                               |
+| default.denormalized_parquet_impala                                                                                                              |
+|                                                                                                                                                  |
+| PLAN-ROOT SINK                                                                                                                                   |
+| |                                                                                                                                                |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                              |
+| |  order by: o_year ASC                                                                                                                          |
+| |                                                                                                                                                |
+| 02:SORT                                                                                                                                          |
+| |  order by: o_year ASC                                                                                                                          |
+| |                                                                                                                                                |
+| 04:AGGREGATE [FINALIZE]                                                                                                                          |
+| |  output: sum:merge(CASE WHEN nation = 'BRAZIL' THEN volume ELSE 0 END), sum:merge(volume)                                                      |
+| |  group by: o_year                                                                                                                              |
+| |                                                                                                                                                |
+| 03:EXCHANGE [HASH(o_year)]                                                                                                                       |
+| |                                                                                                                                                |
+| 01:AGGREGATE [STREAMING]                                                                                                                         |
+| |  output: sum(CASE WHEN n2_name = 'BRAZIL' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum(l_extendedprice * (1 - l_discount))         |
+| |  group by: year(to_date(o_orderdate))                                                                                                          |
+| |                                                                                                                                                |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                               |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                           |
+|    predicates: r_name = 'AMERICA', to_date(o_orderdate) <= '1996-12-31', to_date(o_orderdate) >= '1995-01-01', p_type = 'ECONOMY ANODIZED STEEL' |
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:43.728
+--------------------------------------Finished QUERY 8.----------------------------------
+
+--------------------------------------STARTED  QUERY 9. ---------------------------------
+15/04/2019 15:54:43.736
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select nation, o_year, sum(amount) as sum_profit from ( select n2_name as nation, year(to_date(o_orderdate)) as o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount from denormalized_parquet_impala where p_name like '%green%' ) as profit group by nation, o_year order by nation, o_year desc
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                  |
+| Per-Host Resource Estimates: Memory=884.00MB                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.denormalized_parquet_impala                                                |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                |
+| |  order by: nation ASC, o_year DESC                                               |
+| |                                                                                  |
+| 02:SORT                                                                            |
+| |  order by: nation ASC, o_year DESC                                               |
+| |                                                                                  |
+| 04:AGGREGATE [FINALIZE]                                                            |
+| |  output: sum:merge(amount)                                                       |
+| |  group by: nation, o_year                                                        |
+| |                                                                                  |
+| 03:EXCHANGE [HASH(nation,o_year)]                                                  |
+| |                                                                                  |
+| 01:AGGREGATE [STREAMING]                                                           |
+| |  output: sum(l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity)    |
+| |  group by: n2_name, year(to_date(o_orderdate))                                   |
+| |                                                                                  |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                 |
+|    partitions=1/1 files=15 size=1.49GB                                             |
+|    predicates: p_name LIKE '%green%'                                               |
++------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:43.915
+--------------------------------------Finished QUERY 9.----------------------------------
+
+--------------------------------------STARTED  QUERY 10. ---------------------------------
+15/04/2019 15:54:43.923
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select c_custkey, c_name, sum(l_extendedprice * (1 - l_discount)) as revenue, c_acctbal, n_name, c_address, c_phone, c_comment from denormalized_parquet_impala where to_date(o_orderdate) >= to_date(cast('1993-10-01' as timestamp)) and to_date(o_orderdate) < to_date(date_add(cast('1993-10-01' as timestamp), interval 3 month)) and l_returnflag = 'R' group by c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment order by revenue desc limit 20
++--------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                               |
++--------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=68.00MB                                                            |
+| Per-Host Resource Estimates: Memory=1.20GB                                                                   |
+| WARNING: The following tables are missing relevant table and/or column statistics.                           |
+| default.denormalized_parquet_impala                                                                          |
+|                                                                                                              |
+| PLAN-ROOT SINK                                                                                               |
+| |                                                                                                            |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                          |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                    |
+| |  limit: 20                                                                                                 |
+| |                                                                                                            |
+| 02:TOP-N [LIMIT=20]                                                                                          |
+| |  order by: sum(l_extendedprice * (1 - l_discount)) DESC                                                    |
+| |                                                                                                            |
+| 04:AGGREGATE [FINALIZE]                                                                                      |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                     |
+| |  group by: c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment                             |
+| |                                                                                                            |
+| 03:EXCHANGE [HASH(c_custkey,c_name,c_acctbal,c_phone,n_name,c_address,c_comment)]                            |
+| |                                                                                                            |
+| 01:AGGREGATE [STREAMING]                                                                                     |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                           |
+| |  group by: c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment                             |
+| |                                                                                                            |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                           |
+|    partitions=1/1 files=15 size=1.49GB                                                                       |
+|    predicates: l_returnflag = 'R', to_date(o_orderdate) < '1994-01-01', to_date(o_orderdate) >= '1993-10-01' |
++--------------------------------------------------------------------------------------------------------------+
+Fetched 27 row(s) in 0.01s
+15/04/2019 15:54:44.102
+--------------------------------------Finished QUERY 10.----------------------------------
+
+--------------------------------------STARTED  QUERY 11. ---------------------------------
+--------------------------------------Finished QUERY 11.----------------------------------
+
+--------------------------------------STARTED  QUERY 12. ---------------------------------
+15/04/2019 15:54:44.115
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select l_shipmode, sum(case when o_orderpriority ='1-URGENT' or o_orderpriority ='2-HIGH' then 1 else 0 end) as high_line_count, sum(case when o_orderpriority <> '1-URGENT' and o_orderpriority <> '2-HIGH' then 1  else 0 end) as low_line_count from denormalized_parquet_impala where l_shipmode in ('MAIL', 'SHIP') and to_date(l_commitdate) < to_date(l_receiptdate) and to_date(l_shipdate) < to_date(l_commitdate) and to_date(l_receiptdate) >= to_date('1994-01-01') and to_date(l_receiptdate) < to_date(date_add(cast('1994-01-01' as timestamp), interval 1 year)) group by l_shipmode order by l_shipmode
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                            |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                                                                                                                                                         |
+| Per-Host Resource Estimates: Memory=708.00MB                                                                                                                                                                              |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                        |
+| default.denormalized_parquet_impala                                                                                                                                                                                       |
+|                                                                                                                                                                                                                           |
+| PLAN-ROOT SINK                                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                         |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                                                                                       |
+| |  order by: l_shipmode ASC                                                                                                                                                                                               |
+| |                                                                                                                                                                                                                         |
+| 02:SORT                                                                                                                                                                                                                   |
+| |  order by: l_shipmode ASC                                                                                                                                                                                               |
+| |                                                                                                                                                                                                                         |
+| 04:AGGREGATE [FINALIZE]                                                                                                                                                                                                   |
+| |  output: sum:merge(CASE WHEN o_orderpriority IN ('1-URGENT', '2-HIGH') THEN 1 ELSE 0 END), sum:merge(CASE WHEN o_orderpriority != '1-URGENT' AND o_orderpriority != '2-HIGH' THEN 1 ELSE 0 END)                         |
+| |  group by: l_shipmode                                                                                                                                                                                                   |
+| |                                                                                                                                                                                                                         |
+| 03:EXCHANGE [HASH(l_shipmode)]                                                                                                                                                                                            |
+| |                                                                                                                                                                                                                         |
+| 01:AGGREGATE [STREAMING]                                                                                                                                                                                                  |
+| |  output: sum(CASE WHEN o_orderpriority IN ('1-URGENT', '2-HIGH') THEN 1 ELSE 0 END), sum(CASE WHEN o_orderpriority != '1-URGENT' AND o_orderpriority != '2-HIGH' THEN 1 ELSE 0 END)                                     |
+| |  group by: l_shipmode                                                                                                                                                                                                   |
+| |                                                                                                                                                                                                                         |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                                                                                        |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                                                                                    |
+|    predicates: l_shipmode IN ('MAIL', 'SHIP'), to_date(l_receiptdate) < '1995-01-01', to_date(l_receiptdate) >= '1994-01-01', to_date(l_commitdate) < to_date(l_receiptdate), to_date(l_shipdate) < to_date(l_commitdate) |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:44.298
+--------------------------------------Finished QUERY 12.----------------------------------
+
+--------------------------------------STARTED  QUERY 13. ---------------------------------
+--------------------------------------Finished QUERY 13.----------------------------------
+
+--------------------------------------STARTED  QUERY 14. ---------------------------------
+15/04/2019 15:54:44.312
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select 100.00 * sum(case when p_type like 'PROMO%' then l_extendedprice*(1-l_discount) else 0 end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from denormalized_parquet_impala where l_partkey = p_partkey and to_date(l_shipdate) >= to_date('1995-09-01') and to_date(l_shipdate) < to_date(date_add(cast('1995-09-01' as timestamp), interval 1 month))
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                                                                                           |
+| Per-Host Resource Estimates: Memory=548.00MB                                                                                                           |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                     |
+| default.denormalized_parquet_impala                                                                                                                    |
+|                                                                                                                                                        |
+| PLAN-ROOT SINK                                                                                                                                         |
+| |                                                                                                                                                      |
+| 03:AGGREGATE [FINALIZE]                                                                                                                                |
+| |  output: sum:merge(CASE WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum:merge(l_extendedprice * (1 - l_discount)) |
+| |                                                                                                                                                      |
+| 02:EXCHANGE [UNPARTITIONED]                                                                                                                            |
+| |                                                                                                                                                      |
+| 01:AGGREGATE                                                                                                                                           |
+| |  output: sum(CASE WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) ELSE 0 END), sum(l_extendedprice * (1 - l_discount))             |
+| |                                                                                                                                                      |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                     |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                 |
+|    predicates: l_partkey = p_partkey, to_date(l_shipdate) < '1995-10-01', to_date(l_shipdate) >= '1995-09-01'                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 18 row(s) in 0.01s
+15/04/2019 15:54:44.511
+--------------------------------------Finished QUERY 14.----------------------------------
+
+--------------------------------------STARTED  QUERY 15. ---------------------------------
+15/04/2019 15:54:44.519
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey
+ERROR: AnalysisException: Syntax error in line 1:
+explain create view v_revenue_denorm (suppl...
+               ^
+Encountered: VIEW
+Expected: EXTERNAL, STRAIGHT_JOIN, TABLE
+
+CAUSED BY: Exception: Syntax error
+
+Could not execute command: explain create view v_revenue_denorm (supplier_no, total_revenue) as select l_suppkey,sum(l_extendedprice * (1 - l_discount)) from denormalized_parquet_impala where to_date(l_shipdate) >= to_date('1996-01-01') and to_date(l_shipdate) < to_date(date_add(cast('1996-01-01' as timestamp), interval 3 month)) group by l_suppkey
+15/04/2019 15:54:44.701
+--------------------------------------Finished QUERY 15.----------------------------------
+
+--------------------------------------STARTED  QUERY 16. ---------------------------------
+15/04/2019 15:54:44.710
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select p_brand, p_type, p_size, count(distinct s_suppkey) as supplier_cnt from denormalized_parquet_impala where p_brand <> 'Brand#45' and p_type not like 'MEDIUM POLISHED%' and p_size in (49, 14, 23, 45, 19, 3, 36, 9) and s_comment not like '%Customer%Complaints%' group by p_brand, p_type, p_size order by  supplier_cnt desc,  p_brand,  p_type, p_size
++----------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                 |
++----------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=148.00MB                                                                                                             |
+| Per-Host Resource Estimates: Memory=964.00MB                                                                                                                   |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                             |
+| default.denormalized_parquet_impala                                                                                                                            |
+|                                                                                                                                                                |
+| PLAN-ROOT SINK                                                                                                                                                 |
+| |                                                                                                                                                              |
+| 08:MERGING-EXCHANGE [UNPARTITIONED]                                                                                                                            |
+| |  order by: count(s_suppkey) DESC, p_brand ASC, p_type ASC, p_size ASC                                                                                        |
+| |                                                                                                                                                              |
+| 03:SORT                                                                                                                                                        |
+| |  order by: count(s_suppkey) DESC, p_brand ASC, p_type ASC, p_size ASC                                                                                        |
+| |                                                                                                                                                              |
+| 07:AGGREGATE [FINALIZE]                                                                                                                                        |
+| |  output: count:merge(s_suppkey)                                                                                                                              |
+| |  group by: p_brand, p_type, p_size                                                                                                                           |
+| |                                                                                                                                                              |
+| 06:EXCHANGE [HASH(p_brand,p_type,p_size)]                                                                                                                      |
+| |                                                                                                                                                              |
+| 02:AGGREGATE [STREAMING]                                                                                                                                       |
+| |  output: count(s_suppkey)                                                                                                                                    |
+| |  group by: p_brand, p_type, p_size                                                                                                                           |
+| |                                                                                                                                                              |
+| 05:AGGREGATE                                                                                                                                                   |
+| |  group by: p_brand, p_type, p_size, s_suppkey                                                                                                                |
+| |                                                                                                                                                              |
+| 04:EXCHANGE [HASH(p_brand,p_type,p_size,s_suppkey)]                                                                                                            |
+| |                                                                                                                                                              |
+| 01:AGGREGATE [STREAMING]                                                                                                                                       |
+| |  group by: p_brand, p_type, p_size, s_suppkey                                                                                                                |
+| |                                                                                                                                                              |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                             |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                         |
+|    predicates: p_brand != 'Brand#45', p_size IN (49, 14, 23, 45, 19, 3, 36, 9), NOT p_type LIKE 'MEDIUM POLISHED%', NOT s_comment LIKE '%Customer%Complaints%' |
++----------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 34 row(s) in 0.01s
+15/04/2019 15:54:44.885
+--------------------------------------Finished QUERY 16.----------------------------------
+
+--------------------------------------STARTED  QUERY 17. ---------------------------------
+15/04/2019 15:54:44.893
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice) / 7.0 as avg_yearly from denormalized_parquet_impala a where p_brand = 'Brand#23' and p_container = 'MED BOX' and l_quantity < ( select 0.2 * avg(l_quantity) from denormalized_parquet_impala b where a.l_partkey = b.p_partkey )
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=78.50MB                                  |
+| Per-Host Resource Estimates: Memory=902.50MB                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.denormalized_parquet_impala                                                |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 09:AGGREGATE [FINALIZE]                                                            |
+| |  output: sum:merge(l_extendedprice)                                              |
+| |                                                                                  |
+| 08:EXCHANGE [UNPARTITIONED]                                                        |
+| |                                                                                  |
+| 04:AGGREGATE                                                                       |
+| |  output: sum(l_extendedprice)                                                    |
+| |                                                                                  |
+| 03:HASH JOIN [RIGHT SEMI JOIN, PARTITIONED]                                        |
+| |  hash predicates: b.p_partkey = a.l_partkey                                      |
+| |  other join predicates: l_quantity < 0.2 * avg(l_quantity)                       |
+| |  runtime filters: RF000 <- a.l_partkey                                           |
+| |                                                                                  |
+| |--07:EXCHANGE [HASH(a.l_partkey)]                                                 |
+| |  |                                                                               |
+| |  00:SCAN HDFS [default.denormalized_parquet_impala a]                            |
+| |     partitions=1/1 files=15 size=1.49GB                                          |
+| |     predicates: p_container = 'MED BOX', p_brand = 'Brand#23'                    |
+| |                                                                                  |
+| 06:AGGREGATE [FINALIZE]                                                            |
+| |  output: avg:merge(l_quantity)                                                   |
+| |  group by: b.p_partkey                                                           |
+| |                                                                                  |
+| 05:EXCHANGE [HASH(b.p_partkey)]                                                    |
+| |                                                                                  |
+| 02:AGGREGATE [STREAMING]                                                           |
+| |  output: avg(l_quantity)                                                         |
+| |  group by: b.p_partkey                                                           |
+| |                                                                                  |
+| 01:SCAN HDFS [default.denormalized_parquet_impala b]                               |
+|    partitions=1/1 files=15 size=1.49GB                                             |
+|    runtime filters: RF000 -> b.p_partkey                                           |
++------------------------------------------------------------------------------------+
+Fetched 39 row(s) in 0.01s
+15/04/2019 15:54:45.066
+--------------------------------------Finished QUERY 17.----------------------------------
+
+--------------------------------------STARTED  QUERY 18. ---------------------------------
+15/04/2019 15:54:45.074
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select c_name, c_custkey, o_orderkey, to_date(o_orderdate), o_totalprice, sum(l_quantity) from denormalized_parquet_impala group by c_name, c_custkey, o_orderkey, to_date(o_orderdate), o_totalprice having sum(l_quantity) > 300 order by o_totalprice desc, to_date(o_orderdate)
++------------------------------------------------------------------------------------+
+| Explain String                                                                     |
++------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=80.00MB                                  |
+| Per-Host Resource Estimates: Memory=806.00MB                                       |
+| WARNING: The following tables are missing relevant table and/or column statistics. |
+| default.denormalized_parquet_impala                                                |
+|                                                                                    |
+| PLAN-ROOT SINK                                                                     |
+| |                                                                                  |
+| 05:MERGING-EXCHANGE [UNPARTITIONED]                                                |
+| |  order by: o_totalprice DESC, to_date(o_orderdate) ASC                           |
+| |                                                                                  |
+| 02:SORT                                                                            |
+| |  order by: o_totalprice DESC, to_date(o_orderdate) ASC                           |
+| |                                                                                  |
+| 04:AGGREGATE [FINALIZE]                                                            |
+| |  output: sum:merge(l_quantity)                                                   |
+| |  group by: c_name, c_custkey, o_orderkey, to_date(o_orderdate), o_totalprice     |
+| |  having: sum(l_quantity) > 300                                                   |
+| |                                                                                  |
+| 03:EXCHANGE [HASH(c_name,c_custkey,o_orderkey,to_date(o_orderdate),o_totalprice)]  |
+| |                                                                                  |
+| 01:AGGREGATE [STREAMING]                                                           |
+| |  output: sum(l_quantity)                                                         |
+| |  group by: c_name, c_custkey, o_orderkey, to_date(o_orderdate), o_totalprice     |
+| |                                                                                  |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                 |
+|    partitions=1/1 files=15 size=1.49GB                                             |
++------------------------------------------------------------------------------------+
+Fetched 26 row(s) in 0.01s
+15/04/2019 15:54:45.258
+--------------------------------------Finished QUERY 18.----------------------------------
+
+--------------------------------------STARTED  QUERY 19. ---------------------------------
+15/04/2019 15:54:45.266
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select sum(l_extendedprice * (1 - l_discount) ) as revenue from denormalized_parquet_impala where ( p_brand = 'Brand#12'and p_container in ( 'SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') and l_quantity >= 1 and l_quantity <= 1 + 10 and p_size between 1 and 5 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON') or (p_brand = 'Brand#23' and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') and l_quantity >= 10 and l_quantity <= 10 + 10 and p_size between 1 and 10 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON' ) or (p_brand = 'Brand#34' and p_container in ( 'LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') and l_quantity >= 20 and l_quantity <= 20 + 10 and p_size between 1 and 15 and l_shipmode in ('AIR', 'AIR REG') and l_shipinstruct = 'DELIVER IN PERSON')
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=0B                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Per-Host Resource Estimates: Memory=724.00MB                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| default.denormalized_parquet_impala                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| PLAN-ROOT SINK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 03:AGGREGATE [FINALIZE]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| |  output: sum:merge(l_extendedprice * (1 - l_discount))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 02:EXCHANGE [UNPARTITIONED]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 01:AGGREGATE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| |  output: sum(l_extendedprice * (1 - l_discount))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 00:SCAN HDFS [default.denormalized_parquet_impala]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|    partitions=1/1 files=15 size=1.49GB                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|    predicates: p_size >= 1, l_shipmode IN ('AIR', 'AIR REG'), l_shipinstruct = 'DELIVER IN PERSON', ((p_brand = 'Brand#12' AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') AND l_quantity >= 1 AND l_quantity <= 11 AND p_size <= 5) OR (p_brand = 'Brand#23' AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') AND l_quantity >= 10 AND l_quantity <= 20 AND p_size <= 10) OR (p_brand = 'Brand#34' AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') AND l_quantity >= 20 AND l_quantity <= 30 AND p_size <= 15)) |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Fetched 18 row(s) in 0.01s
+15/04/2019 15:54:45.473
+--------------------------------------Finished QUERY 19.----------------------------------
+
+--------------------------------------STARTED  QUERY 20. ---------------------------------
+--------------------------------------Finished QUERY 20.----------------------------------
+
+--------------------------------------STARTED  QUERY 21. ---------------------------------
+15/04/2019 15:54:45.487
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select s_name, count(*) as numwait from denormalized_parquet_impala l1 where o_orderstatus = 'F' and l1.l_receiptdate > l1.l_commitdate and exists ( select * from denormalized_parquet_impala l2 where l2.l_orderkey = l1.l_orderkey and l2.l_suppkey <> l1.l_suppkey ) and not exists ( select * from denormalized_parquet_impala l3 where l3.l_orderkey = l1.l_orderkey and l3.l_suppkey <> l1.l_suppkey and l3.l_receiptdate > l3.l_commitdate ) and s_nationkey = n2_nationkey and n2_name = 'SAUDI ARABIA' group by s_name order by numwait desc, s_name limit 100
++---------------------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                                  |
++---------------------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=95.50MB                                                                               |
+| Per-Host Resource Estimates: Memory=1.57GB                                                                                      |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                              |
+| default.denormalized_parquet_impala                                                                                             |
+|                                                                                                                                 |
+| PLAN-ROOT SINK                                                                                                                  |
+| |                                                                                                                               |
+| 12:MERGING-EXCHANGE [UNPARTITIONED]                                                                                             |
+| |  order by: count(*) DESC, s_name ASC                                                                                          |
+| |  limit: 100                                                                                                                   |
+| |                                                                                                                               |
+| 06:TOP-N [LIMIT=100]                                                                                                            |
+| |  order by: count(*) DESC, s_name ASC                                                                                          |
+| |                                                                                                                               |
+| 11:AGGREGATE [FINALIZE]                                                                                                         |
+| |  output: count:merge(*)                                                                                                       |
+| |  group by: s_name                                                                                                             |
+| |                                                                                                                               |
+| 10:EXCHANGE [HASH(s_name)]                                                                                                      |
+| |                                                                                                                               |
+| 05:AGGREGATE [STREAMING]                                                                                                        |
+| |  output: count(*)                                                                                                             |
+| |  group by: s_name                                                                                                             |
+| |                                                                                                                               |
+| 04:HASH JOIN [LEFT ANTI JOIN, PARTITIONED]                                                                                      |
+| |  hash predicates: l1.l_orderkey = l3.l_orderkey                                                                               |
+| |  other join predicates: l3.l_suppkey != l1.l_suppkey                                                                          |
+| |                                                                                                                               |
+| |--09:EXCHANGE [HASH(l3.l_orderkey)]                                                                                            |
+| |  |                                                                                                                            |
+| |  02:SCAN HDFS [default.denormalized_parquet_impala l3]                                                                        |
+| |     partitions=1/1 files=15 size=1.49GB                                                                                       |
+| |     predicates: l3.l_receiptdate > l3.l_commitdate                                                                            |
+| |                                                                                                                               |
+| 03:HASH JOIN [RIGHT SEMI JOIN, PARTITIONED]                                                                                     |
+| |  hash predicates: l2.l_orderkey = l1.l_orderkey                                                                               |
+| |  other join predicates: l2.l_suppkey != l1.l_suppkey                                                                          |
+| |  runtime filters: RF000 <- l1.l_orderkey                                                                                      |
+| |                                                                                                                               |
+| |--08:EXCHANGE [HASH(l1.l_orderkey)]                                                                                            |
+| |  |                                                                                                                            |
+| |  00:SCAN HDFS [default.denormalized_parquet_impala l1]                                                                        |
+| |     partitions=1/1 files=15 size=1.49GB                                                                                       |
+| |     predicates: o_orderstatus = 'F', l1.l_receiptdate > l1.l_commitdate, s_nationkey = n2_nationkey, n2_name = 'SAUDI ARABIA' |
+| |                                                                                                                               |
+| 07:EXCHANGE [HASH(l2.l_orderkey)]                                                                                               |
+| |                                                                                                                               |
+| 01:SCAN HDFS [default.denormalized_parquet_impala l2]                                                                           |
+|    partitions=1/1 files=15 size=1.49GB                                                                                          |
+|    runtime filters: RF000 -> l2.l_orderkey                                                                                      |
++---------------------------------------------------------------------------------------------------------------------------------+
+Fetched 50 row(s) in 0.02s
+15/04/2019 15:54:45.678
+--------------------------------------Finished QUERY 21.----------------------------------
+
+--------------------------------------STARTED  QUERY 22. ---------------------------------
+15/04/2019 15:54:45.686
+Starting Impala Shell without Kerberos authentication
+Connected to bddf94c97b8d:21000
+Server version: impalad version 2.12.0-cdh5.16.1 RELEASE (build 4a3775ef6781301af81b23bca45a9faeca5e761d)
+Query: explain select cntrycode, count(*) as numcust, sum(c_acctbal) as totacctbal from ( select substring(a.c_phone, 1,2) as cntrycode, a.c_acctbal from denormalized_parquet_impala a where  substring(a.c_phone, 1,2) in ('13','31','23','29','30','18','17') and a.c_acctbal > ( select avg(b.c_acctbal) from denormalized_parquet_impala b where b.c_acctbal > 0.00 and substring(b.c_phone, 1,2) in ('13','31','23','29','30','18','17') ) and not exists ( select * from denormalized_parquet_impala c where a.o_custkey = c.c_custkey ) ) as custsale group by cntrycode order by cntrycode
++-------------------------------------------------------------------------------------------------------------------+
+| Explain String                                                                                                    |
++-------------------------------------------------------------------------------------------------------------------+
+| Max Per-Host Resource Reservation: Memory=88.50MB                                                                 |
+| Per-Host Resource Estimates: Memory=824.50MB                                                                      |
+| WARNING: The following tables are missing relevant table and/or column statistics.                                |
+| default.denormalized_parquet_impala                                                                               |
+|                                                                                                                   |
+| PLAN-ROOT SINK                                                                                                    |
+| |                                                                                                                 |
+| 15:MERGING-EXCHANGE [UNPARTITIONED]                                                                               |
+| |  order by: cntrycode ASC                                                                                        |
+| |                                                                                                                 |
+| 07:SORT                                                                                                           |
+| |  order by: cntrycode ASC                                                                                        |
+| |                                                                                                                 |
+| 14:AGGREGATE [FINALIZE]                                                                                           |
+| |  output: count:merge(*), sum:merge(c_acctbal)                                                                   |
+| |  group by: cntrycode                                                                                            |
+| |                                                                                                                 |
+| 13:EXCHANGE [HASH(cntrycode)]                                                                                     |
+| |                                                                                                                 |
+| 06:AGGREGATE [STREAMING]                                                                                          |
+| |  output: count(*), sum(a.c_acctbal)                                                                             |
+| |  group by: substring(a.c_phone, 1, 2)                                                                           |
+| |                                                                                                                 |
+| 05:HASH JOIN [RIGHT ANTI JOIN, PARTITIONED]                                                                       |
+| |  hash predicates: c.c_custkey = a.o_custkey                                                                     |
+| |                                                                                                                 |
+| |--12:EXCHANGE [HASH(a.o_custkey)]                                                                                |
+| |  |                                                                                                              |
+| |  04:NESTED LOOP JOIN [INNER JOIN, BROADCAST]                                                                    |
+| |  |  predicates: a.c_acctbal > avg(b.c_acctbal)                                                                  |
+| |  |                                                                                                              |
+| |  |--10:EXCHANGE [BROADCAST]                                                                                     |
+| |  |  |                                                                                                           |
+| |  |  09:AGGREGATE [FINALIZE]                                                                                     |
+| |  |  |  output: avg:merge(b.c_acctbal)                                                                           |
+| |  |  |                                                                                                           |
+| |  |  08:EXCHANGE [UNPARTITIONED]                                                                                 |
+| |  |  |                                                                                                           |
+| |  |  02:AGGREGATE                                                                                                |
+| |  |  |  output: avg(b.c_acctbal)                                                                                 |
+| |  |  |                                                                                                           |
+| |  |  01:SCAN HDFS [default.denormalized_parquet_impala b]                                                        |
+| |  |     partitions=1/1 files=15 size=1.49GB                                                                      |
+| |  |     predicates: b.c_acctbal > 0.00, substring(b.c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17') |
+| |  |                                                                                                              |
+| |  00:SCAN HDFS [default.denormalized_parquet_impala a]                                                           |
+| |     partitions=1/1 files=15 size=1.49GB                                                                         |
+| |     predicates: substring(a.c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17')                        |
+| |                                                                                                                 |
+| 11:EXCHANGE [HASH(c.c_custkey)]                                                                                   |
+| |                                                                                                                 |
+| 03:SCAN HDFS [default.denormalized_parquet_impala c]                                                              |
+|    partitions=1/1 files=15 size=1.49GB                                                                            |
++-------------------------------------------------------------------------------------------------------------------+
+Fetched 53 row(s) in 0.02s
+15/04/2019 15:54:45.896
+--------------------------------------Finished QUERY 22.----------------------------------
+
+15/04/2019 15:54:45.902

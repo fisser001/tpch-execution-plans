@@ -1,0 +1,1695 @@
+-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------
+-------------------------------------- CREATED PATH IF NOT EXIST ---------------------------------
+-------------------------------------- presto_star_query_sf3_result_explain.txt ---------------------------------
+-------------------------------------- presto_star_query_sf3_result_explain.txt ---------------------------------
+-------------------------------------- PRESTO QUERY STAR ---------------------------------
+-------------------------------------- PRESTO QUERY STAR ---------------------------------
+12/04/2019 11:51:01.
+
+--------------------------------------STARTED QUERY 1. ---------------------------------
+12/04/2019 11:51:01.
+"- Output[l_returnflag, l_linestatus, sum_qty, sum_base_price, sum_disc_price, sum_charge, avg_qty, avg_price, avg_disc, count_order] => [[l_returnflag, l_linestatus, sum, sum_8, sum_9, sum_10, avg, avg_11, avg_12, count]]
+        Cost: ?, Output: ? rows (?B)
+        sum_qty := sum
+        sum_base_price := sum_8
+        sum_disc_price := sum_9
+        sum_charge := sum_10
+        avg_qty := avg
+        avg_price := avg_11
+        avg_disc := avg_12
+        count_order := count
+    - RemoteMerge[l_returnflag ASC_NULLS_LAST, l_linestatus ASC_NULLS_LAST] => [[l_returnflag, l_linestatus, sum, sum_8, sum_9, sum_10, avg, avg_11, avg_12, count]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[l_returnflag ASC_NULLS_LAST, l_linestatus ASC_NULLS_LAST] => [[l_returnflag, l_linestatus, sum, sum_8, sum_9, sum_10, avg, avg_11, avg_12, count]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[l_returnflag ASC_NULLS_LAST, l_linestatus ASC_NULLS_LAST] => [[l_returnflag, l_linestatus, sum, sum_8, sum_9, sum_10, avg, avg_11, avg_12, count]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[l_returnflag, l_linestatus, sum, sum_8, sum_9, sum_10, avg, avg_11, avg_12, count]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[l_returnflag, l_linestatus, sum_10, avg, avg_11, count, sum, avg_12, sum_9, sum_8]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[l_returnflag, l_linestatus][$hashvalue] => [[l_returnflag, l_linestatus, $hashvalue, sum_10, avg, avg_11, count, sum, avg_12, sum_9, sum_8]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_10 := ""sum""(""sum_50"")
+                                avg := ""avg""(""avg_51"")
+                                avg_11 := ""avg""(""avg_52"")
+                                count := ""count""(""count_54"")
+                                sum := ""sum""(""sum_47"")
+                                avg_12 := ""avg""(""avg_53"")
+                                sum_9 := ""sum""(""sum_49"")
+                                sum_8 := ""sum""(""sum_48"")
+                            - LocalExchange[HASH][$hashvalue] (""l_returnflag"", ""l_linestatus"") => [[l_returnflag, l_linestatus, sum_47, sum_49, sum_48, avg_51, count_54, sum_50, avg_53, avg_52, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_55] => [[l_returnflag, l_linestatus, sum_47, sum_49, sum_48, avg_51, count_54, sum_50, avg_53, avg_52, $hashvalue_55]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[l_returnflag, l_linestatus][$hashvalue_56] => [[l_returnflag, l_linestatus, $hashvalue_56, sum_47, sum_49, sum_48, avg_51, count_54, sum_50, avg_53, avg_52]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_47 := ""sum""(""l_quantity"")
+                                            sum_49 := ""sum""(""expr"")
+                                            sum_48 := ""sum""(""l_extendedprice"")
+                                            avg_51 := ""avg""(""l_quantity"")
+                                            count_54 := ""count""(*)
+                                            sum_50 := ""sum""(""expr_4"")
+                                            avg_53 := ""avg""(""l_discount"")
+                                            avg_52 := ""avg""(""l_extendedprice"")
+                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""l_shipdate"" <= DATE '1998-09-02')] => [[l_returnflag, l_linestatus, expr, expr_4, l_quantity, l_extendedprice, l_discount, $hashvalue_56]]
+                                                Estimates: {rows: 17906532 (2.73GB), cpu: 2703886332.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 5407772664.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                Cost: ?, Output: ? rows (?B)
+                                                expr := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                                expr_4 := ((""l_extendedprice"" * (1E0 - ""l_discount"")) * (1E0 + ""l_tax""))
+                                                $hashvalue_56 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_returnflag""), 0)), COALESCE(""$operator$hash_code""(""l_linestatus""), 0))
+                                                LAYOUT: default.lo_lineitem_orders_star
+                                                l_returnflag := l_returnflag:string:17:REGULAR
+                                                l_tax := l_tax:double:16:REGULAR
+                                                l_quantity := l_quantity:double:13:REGULAR
+                                                l_linestatus := l_linestatus:string:18:REGULAR
+                                                l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                l_shipdate := l_shipdate:date:19:REGULAR
+                                                l_discount := l_discount:double:15:REGULAR
+"
+12/04/2019 11:51:02.
+--------------------------------------Finished QUERY 1.--------------------------------
+
+--------------------------------------STARTED QUERY 2. ---------------------------------
+--------------------------------------Finished QUERY 2.--------------------------------
+
+--------------------------------------STARTED QUERY 3. ---------------------------------
+12/04/2019 11:51:02.
+"- Output[l_orderkey, revenue, o_orderdate, o_shippriority] => [[l_orderkey, sum, o_orderdate, o_shippriority]]
+        Cost: ?, Output: ? rows (?B)
+        revenue := sum
+    - TopN[10 by (sum DESC_NULLS_LAST, o_orderdate ASC_NULLS_LAST)] => [[l_orderkey, o_orderdate, o_shippriority, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalExchange[SINGLE] () => [[l_orderkey, o_orderdate, o_shippriority, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[l_orderkey, o_orderdate, o_shippriority, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - TopNPartial[10 by (sum DESC_NULLS_LAST, o_orderdate ASC_NULLS_LAST)] => [[l_orderkey, o_orderdate, o_shippriority, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[l_orderkey, o_orderdate, o_shippriority, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[l_orderkey, o_orderdate, o_shippriority][$hashvalue] => [[l_orderkey, o_orderdate, o_shippriority, $hashvalue, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum := ""sum""(""sum_22"")
+                            - LocalExchange[HASH][$hashvalue] (""l_orderkey"", ""o_orderdate"", ""o_shippriority"") => [[l_orderkey, o_orderdate, o_shippriority, sum_22, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_23] => [[l_orderkey, o_orderdate, o_shippriority, sum_22, $hashvalue_23]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[l_orderkey, o_orderdate, o_shippriority][$hashvalue_29] => [[l_orderkey, o_orderdate, o_shippriority, $hashvalue_29, sum_22]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_22 := ""sum""(""expr"")
+                                        - Project[] => [[l_orderkey, o_orderdate, o_shippriority, expr, $hashvalue_29]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                expr := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                                $hashvalue_29 := ""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey""), 0)), COALESCE(""$operator$hash_code""(""o_orderdate""), 0)), COALESCE(""$operator$hash_code""(""o_shippriority""), 0))
+                                            - InnerJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_24, $hashvalue_26] => [[o_orderdate, l_orderkey, o_shippriority, l_extendedprice, l_discount]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    Distribution: PARTITIONED
+                                                - RemoteExchange[REPARTITION][$hashvalue_24] => [[c_custkey, $hashvalue_24]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""c_mktsegment"" = CAST('BUILDING' AS varchar))] => [[c_custkey, $hashvalue_25]]
+                                                            Estimates: {rows: 450000 (27.47MB), cpu: 49500000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 99000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_25 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                            LAYOUT: default.c_customer_star
+                                                            c_custkey := c_custkey:string:0:REGULAR
+                                                            c_mktsegment := c_mktsegment:string:6:REGULAR
+                                                - LocalExchange[HASH][$hashvalue_26] (""o_custkey"") => [[o_orderdate, l_orderkey, o_shippriority, l_extendedprice, o_custkey, l_discount, $hashvalue_26]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - RemoteExchange[REPARTITION][$hashvalue_27] => [[o_orderdate, l_orderkey, o_shippriority, l_extendedprice, o_custkey, l_discount, $hashvalue_27]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""l_shipdate"" > DATE '1995-03-15') AND (""o_orderdate"" < DATE '1995-03-15'))] => [[o_orderdate, l_orderkey, o_shippriority, l_extendedprice, o_custkey, l_discount, $hashvalue_28]]
+                                                                Estimates: {rows: 17906532 (2.45GB), cpu: 2560634076.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 5121268152.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                $hashvalue_28 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                LAYOUT: default.lo_lineitem_orders_star
+                                                                o_orderdate := o_orderdate:date:4:REGULAR
+                                                                l_orderkey := l_orderkey:string:9:REGULAR
+                                                                o_shippriority := o_shippriority:int:7:REGULAR
+                                                                l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                                o_custkey := o_custkey:string:1:REGULAR
+                                                                l_shipdate := l_shipdate:date:19:REGULAR
+                                                                l_discount := l_discount:double:15:REGULAR
+"
+12/04/2019 11:51:04.
+--------------------------------------Finished QUERY 3.--------------------------------
+
+--------------------------------------STARTED QUERY 4. ---------------------------------
+12/04/2019 11:51:04.
+"- Output[o_orderpriority, order_count] => [[o_orderpriority, count]]
+        Cost: ?, Output: ? rows (?B)
+        order_count := count
+    - RemoteMerge[o_orderpriority ASC_NULLS_LAST] => [[o_orderpriority, count]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[o_orderpriority ASC_NULLS_LAST] => [[o_orderpriority, count]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[o_orderpriority ASC_NULLS_LAST] => [[o_orderpriority, count]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[o_orderpriority, count]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[o_orderpriority, count]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[o_orderpriority][$hashvalue] => [[o_orderpriority, $hashvalue, count]]
+                                Cost: ?, Output: ? rows (?B)
+                                count := ""count""(""count_9"")
+                            - LocalExchange[HASH][$hashvalue] (""o_orderpriority"") => [[o_orderpriority, count_9, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_10] => [[o_orderpriority, count_9, $hashvalue_10]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[o_orderpriority][$hashvalue_14] => [[o_orderpriority, $hashvalue_14, count_9]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            count_9 := ""count""(""o_orderkey"")
+                                        - Project[] => [[o_orderpriority, o_orderkey, $hashvalue_14]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_14 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_orderpriority""), 0))
+                                            - Aggregate(FINAL)[o_orderpriority, o_orderkey][$hashvalue_11] => [[o_orderpriority, o_orderkey, $hashvalue_11]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - LocalExchange[HASH][$hashvalue_11] (""o_orderpriority"", ""o_orderkey"") => [[o_orderpriority, o_orderkey, $hashvalue_11]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - RemoteExchange[REPARTITION][$hashvalue_12] => [[o_orderpriority, o_orderkey, $hashvalue_12]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - Aggregate(PARTIAL)[o_orderpriority, o_orderkey][$hashvalue_13] => [[o_orderpriority, o_orderkey, $hashvalue_13]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (((""o_orderdate"" >= DATE '1993-07-01') AND (""o_orderdate"" < DATE '1993-10-01')) AND (""l_commitdate"" < ""l_receiptdate""))] => [[o_orderpriority, o_orderkey, $hashvalue_13]]
+                                                                    Estimates: {rows: 17906532 (1.98GB), cpu: 2238316500.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4476633000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_13 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_orderpriority""), 0)), COALESCE(""$operator$hash_code""(""o_orderkey""), 0))
+                                                                    LAYOUT: default.lo_lineitem_orders_star
+                                                                    l_commitdate := l_commitdate:date:20:REGULAR
+                                                                    l_receiptdate := l_receiptdate:date:21:REGULAR
+                                                                    o_orderdate := o_orderdate:date:4:REGULAR
+                                                                    o_orderkey := o_orderkey:string:0:REGULAR
+                                                                    o_orderpriority := o_orderpriority:string:5:REGULAR
+"
+12/04/2019 11:51:06.
+--------------------------------------Finished QUERY 4.--------------------------------
+
+--------------------------------------STARTED QUERY 5. ---------------------------------
+12/04/2019 11:51:06.
+"- Output[n_name, revenue] => [[n_name_2, sum]]
+        Cost: ?, Output: ? rows (?B)
+        n_name := n_name_2
+        revenue := sum
+    - RemoteMerge[sum DESC_NULLS_LAST] => [[n_name_2, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[sum DESC_NULLS_LAST] => [[n_name_2, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[sum DESC_NULLS_LAST] => [[n_name_2, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[n_name_2, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[n_name_2, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[n_name_2][$hashvalue] => [[n_name_2, $hashvalue, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum := ""sum""(""sum_17"")
+                            - LocalExchange[HASH][$hashvalue] (""n_name_2"") => [[n_name_2, sum_17, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_18] => [[n_name_2, sum_17, $hashvalue_18]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[n_name_2][$hashvalue_29] => [[n_name_2, $hashvalue_29, sum_17]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_17 := ""sum""(""expr_9"")
+                                        - Project[] => [[n_name_2, expr_9, $hashvalue_29]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                expr_9 := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                                $hashvalue_29 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""n_name_2""), 0))
+                                            - InnerJoin[(""l_suppkey"" = ""s_suppkey"") AND (""c_nationkey"" = ""s_nationkey"")][$hashvalue_19, $hashvalue_26] => [[l_extendedprice, l_discount, n_name_2]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    Distribution: PARTITIONED
+                                                - RemoteExchange[REPARTITION][$hashvalue_19] => [[c_nationkey, l_extendedprice, l_suppkey, l_discount, $hashvalue_19]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - Project[] => [[c_nationkey, l_extendedprice, l_suppkey, l_discount, $hashvalue_25]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_25 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_suppkey""), 0)), COALESCE(""$operator$hash_code""(""c_nationkey""), 0))
+                                                        - InnerJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_20, $hashvalue_22] => [[c_nationkey, l_extendedprice, l_suppkey, l_discount]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                Distribution: PARTITIONED
+                                                            - RemoteExchange[REPARTITION][$hashvalue_20] => [[c_custkey, c_nationkey, $hashvalue_20]]
+                                                                    Estimates: {rows: 450000 (51.07MB), cpu: 156600000.00, memory: 0.00, network: 53550000.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}] => [[c_custkey, c_nationkey, $hashvalue_21]]
+                                                                        Estimates: {rows: 450000 (51.07MB), cpu: 49500000.00, memory: 0.00, network: 0.00}/{rows: 450000 (51.07MB), cpu: 103050000.00, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_21 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                        LAYOUT: default.c_customer_star
+                                                                        c_custkey := c_custkey:string:0:REGULAR
+                                                                        c_nationkey := c_nationkey:string:3:REGULAR
+                                                            - LocalExchange[HASH][$hashvalue_22] (""o_custkey"") => [[l_extendedprice, l_suppkey, o_custkey, l_discount, $hashvalue_22]]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - RemoteExchange[REPARTITION][$hashvalue_23] => [[l_extendedprice, l_suppkey, o_custkey, l_discount, $hashvalue_23]]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""o_orderdate"" >= DATE '1994-01-01') AND (""o_orderdate"" < DATE '1995-01-01'))] => [[l_extendedprice, l_suppkey, o_custkey, l_discount, $hashvalue_24]]
+                                                                            Estimates: {rows: 17906532 (2.28GB), cpu: 2381568756.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4763137512.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_24 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                            LAYOUT: default.lo_lineitem_orders_star
+                                                                            o_orderdate := o_orderdate:date:4:REGULAR
+                                                                            l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                                            l_suppkey := l_suppkey:string:11:REGULAR
+                                                                            o_custkey := o_custkey:string:1:REGULAR
+                                                                            l_discount := l_discount:double:15:REGULAR
+                                                - LocalExchange[HASH][$hashvalue_26] (""s_suppkey"", ""s_nationkey"") => [[s_nationkey, s_suppkey, n_name_2, $hashvalue_26]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - RemoteExchange[REPARTITION][$hashvalue_27] => [[s_nationkey, s_suppkey, n_name_2, $hashvalue_27]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""r_name_6"" = CAST('ASIA' AS varchar))] => [[s_nationkey, s_suppkey, n_name_2, $hashvalue_28]]
+                                                                Estimates: {rows: 30000 (4.98MB), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 13200000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                $hashvalue_28 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0)), COALESCE(""$operator$hash_code""(""s_nationkey""), 0))
+                                                                LAYOUT: default.s_supplier_star
+                                                                r_name_6 := r_name:string:12:REGULAR
+                                                                s_nationkey := s_nationkey:string:3:REGULAR
+                                                                s_suppkey := s_suppkey:string:0:REGULAR
+                                                                n_name_2 := n_name:string:8:REGULAR
+"
+12/04/2019 11:51:08.
+--------------------------------------Finished QUERY 5.--------------------------------
+
+--------------------------------------STARTED QUERY 6. ---------------------------------
+12/04/2019 11:51:08.
+"- Output[revenue] => [[sum]]
+        Cost: ?, Output: ? rows (?B)
+        revenue := sum
+    - Aggregate(FINAL) => [[sum]]
+            Cost: ?, Output: ? rows (?B)
+            sum := ""sum""(""sum_4"")
+        - LocalExchange[SINGLE] () => [[sum_4]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[sum_4]]
+                    Cost: ?, Output: ? rows (?B)
+                - Aggregate(PARTIAL) => [[sum_4]]
+                        Cost: ?, Output: ? rows (?B)
+                        sum_4 := ""sum""(""expr"")
+                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (((""l_discount"" BETWEEN 5E-2 AND 7E-2) AND (""l_quantity"" < 2.4E1)) AND ((""l_shipdate"" >= DATE '1994-01-01') AND (""l_shipdate"" < DATE '1995-01-01')))] => [[expr]]
+                            Estimates: {rows: 17906532 (153.69MB), cpu: 573009024.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 1146018048.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                            Cost: ?, Output: ? rows (?B)
+                            expr := (""l_extendedprice"" * ""l_discount"")
+                            LAYOUT: default.lo_lineitem_orders_star
+                            l_quantity := l_quantity:double:13:REGULAR
+                            l_extendedprice := l_extendedprice:double:14:REGULAR
+                            l_shipdate := l_shipdate:date:19:REGULAR
+                            l_discount := l_discount:double:15:REGULAR
+"
+12/04/2019 11:51:09.
+--------------------------------------Finished QUERY 6.--------------------------------
+
+--------------------------------------STARTED QUERY 7. ---------------------------------
+12/04/2019 11:51:09.
+"- Output[supp_nation, cust_nation, l_year, revenue] => [[n_name, n_name_2, expr_10, sum]]
+        Cost: ?, Output: ? rows (?B)
+        supp_nation := n_name
+        cust_nation := n_name_2
+        l_year := expr_10
+        revenue := sum
+    - RemoteMerge[n_name ASC_NULLS_LAST, n_name_2 ASC_NULLS_LAST, expr_10 ASC_NULLS_LAST] => [[n_name, n_name_2, expr_10, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[n_name ASC_NULLS_LAST, n_name_2 ASC_NULLS_LAST, expr_10 ASC_NULLS_LAST] => [[n_name, n_name_2, expr_10, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[n_name ASC_NULLS_LAST, n_name_2 ASC_NULLS_LAST, expr_10 ASC_NULLS_LAST] => [[n_name, n_name_2, expr_10, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[n_name, n_name_2, expr_10, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[n_name, n_name_2, expr_10, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[n_name, n_name_2, expr_10][$hashvalue] => [[n_name, n_name_2, expr_10, $hashvalue, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum := ""sum""(""sum_42"")
+                            - LocalExchange[HASH][$hashvalue] (""n_name"", ""n_name_2"", ""expr_10"") => [[n_name, n_name_2, expr_10, sum_42, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_43] => [[n_name, n_name_2, expr_10, sum_42, $hashvalue_43]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[n_name, n_name_2, expr_10][$hashvalue_54] => [[n_name, n_name_2, expr_10, $hashvalue_54, sum_42]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_42 := ""sum""(""expr_11"")
+                                        - Project[] => [[n_name, n_name_2, expr_10, expr_11, $hashvalue_54]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_54 := ""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""n_name""), 0)), COALESCE(""$operator$hash_code""(""n_name_2""), 0)), COALESCE(""$operator$hash_code""(""expr_10""), 0))
+                                            - Project[] => [[n_name, n_name_2, expr_10, expr_11]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    expr_10 := ""year""(""l_shipdate"")
+                                                    expr_11 := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                                - InnerJoin[(""o_custkey"" = ""c_custkey"") AND (((""n_name"" = CAST('FRANCE' AS varchar)) OR (""n_name_2"" = CAST('FRANCE' AS varchar))) AND ((""n_name_2"" = CAST('GERMANY' AS varchar)) OR (""n_name"" = CAST('GERMANY' AS varchar))))][$hashvalue_44, $hashvalue_51] => [[n_name, l_extendedprice, l_shipdate, l_discount, n_name_2]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        Distribution: PARTITIONED
+                                                    - RemoteExchange[REPARTITION][$hashvalue_44] => [[n_name, l_extendedprice, o_custkey, l_shipdate, l_discount, $hashvalue_44]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - Project[] => [[n_name, o_custkey, l_extendedprice, l_discount, l_shipdate, $hashvalue_50]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                $hashvalue_50 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                            - InnerJoin[(""s_suppkey"" = ""l_suppkey"")][$hashvalue_45, $hashvalue_47] => [[n_name, o_custkey, l_extendedprice, l_discount, l_shipdate]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    Distribution: PARTITIONED
+                                                                - RemoteExchange[REPARTITION][$hashvalue_45] => [[s_suppkey, n_name, $hashvalue_45]]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""n_name"" IN (CAST('FRANCE' AS varchar), CAST('GERMANY' AS varchar)))] => [[s_suppkey, n_name, $hashvalue_46]]
+                                                                            Estimates: {rows: 30000 (3.40MB), cpu: 3300000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_46 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                            LAYOUT: default.s_supplier_star
+                                                                            s_suppkey := s_suppkey:string:0:REGULAR
+                                                                            n_name := n_name:string:8:REGULAR
+                                                                - LocalExchange[HASH][$hashvalue_47] (""l_suppkey"") => [[o_custkey, l_suppkey, l_extendedprice, l_discount, l_shipdate, $hashvalue_47]]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - RemoteExchange[REPARTITION][$hashvalue_48] => [[o_custkey, l_suppkey, l_extendedprice, l_discount, l_shipdate, $hashvalue_48]]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""l_shipdate"" BETWEEN DATE '1995-01-01' AND DATE '1996-12-31')] => [[o_custkey, l_suppkey, l_extendedprice, l_discount, l_shipdate, $hashvalue_49]]
+                                                                                Estimates: {rows: 17906532 (2.37GB), cpu: 2381568756.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4763137512.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                $hashvalue_49 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                                                LAYOUT: default.lo_lineitem_orders_star
+                                                                                l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                                                l_suppkey := l_suppkey:string:11:REGULAR
+                                                                                o_custkey := o_custkey:string:1:REGULAR
+                                                                                l_shipdate := l_shipdate:date:19:REGULAR
+                                                                                l_discount := l_discount:double:15:REGULAR
+                                                    - LocalExchange[HASH][$hashvalue_51] (""c_custkey"") => [[c_custkey, n_name_2, $hashvalue_51]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - RemoteExchange[REPARTITION][$hashvalue_52] => [[c_custkey, n_name_2, $hashvalue_52]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""n_name_2"" IN (CAST('FRANCE' AS varchar), CAST('GERMANY' AS varchar)))] => [[c_custkey, n_name_2, $hashvalue_53]]
+                                                                    Estimates: {rows: 450000 (51.07MB), cpu: 49500000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 99000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_53 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                    LAYOUT: default.c_customer_star
+                                                                    c_custkey := c_custkey:string:0:REGULAR
+                                                                    n_name_2 := n_name:string:9:REGULAR
+"
+12/04/2019 11:51:11.
+--------------------------------------Finished QUERY 7.--------------------------------
+
+--------------------------------------STARTED QUERY 8. ---------------------------------
+12/04/2019 11:51:11.
+"- Output[o_year, mkt_share] => [[expr, expr_24]]
+        Cost: ?, Output: ? rows (?B)
+        o_year := expr
+        mkt_share := expr_24
+    - RemoteMerge[expr ASC_NULLS_LAST] => [[expr, expr_24]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[expr ASC_NULLS_LAST] => [[expr, expr_24]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[expr ASC_NULLS_LAST] => [[expr, expr_24]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[expr, expr_24]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[expr, expr_24]]
+                            Cost: ?, Output: ? rows (?B)
+                            expr_24 := (""sum"" / ""sum_22"")
+                        - Aggregate(FINAL)[expr] => [[expr, sum_22, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_22 := ""sum""(""sum_32"")
+                                sum := ""sum""(""sum_31"")
+                            - LocalExchange[HASH][$hashvalue] (""expr"") => [[expr, sum_32, sum_31, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_33] => [[expr, sum_32, sum_31, $hashvalue_33]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Project[] => [[expr, sum_32, sum_31, $hashvalue_49]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            $hashvalue_49 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""expr""), 0))
+                                        - Aggregate(PARTIAL)[expr] => [[expr, sum_32, sum_31]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                sum_32 := ""sum""(""expr_10"")
+                                                sum_31 := ""sum""(""expr_21"")
+                                            - Project[] => [[expr_10, expr_21, expr]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    expr_21 := (CASE WHEN (""n_name"" = CAST('BRAZIL' AS varchar)) THEN ""expr_10"" ELSE 0E0 END)
+                                                    expr := ""year""(""o_orderdate"")
+                                                - Project[] => [[expr_10, n_name, o_orderdate]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        expr_10 := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                                    - InnerJoin[(""o_custkey"" = ""c_custkey"")][$hashvalue_34, $hashvalue_46] => [[o_orderdate, l_extendedprice, l_discount, n_name]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            Distribution: PARTITIONED
+                                                        - RemoteExchange[REPARTITION][$hashvalue_34] => [[o_orderdate, l_extendedprice, o_custkey, l_discount, n_name, $hashvalue_34]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - Project[] => [[o_orderdate, l_extendedprice, o_custkey, l_discount, n_name, $hashvalue_45]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_45 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                - InnerJoin[(""l_suppkey"" = ""s_suppkey"")][$hashvalue_35, $hashvalue_42] => [[o_orderdate, l_extendedprice, o_custkey, l_discount, n_name]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        Distribution: PARTITIONED
+                                                                    - RemoteExchange[REPARTITION][$hashvalue_35] => [[o_orderdate, l_extendedprice, l_suppkey, o_custkey, l_discount, $hashvalue_35]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - Project[] => [[o_custkey, o_orderdate, l_suppkey, l_extendedprice, l_discount, $hashvalue_41]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                $hashvalue_41 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                                            - InnerJoin[(""p_partkey"" = ""l_partkey"")][$hashvalue_36, $hashvalue_38] => [[o_custkey, o_orderdate, l_suppkey, l_extendedprice, l_discount]]
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    Distribution: PARTITIONED
+                                                                                - RemoteExchange[REPARTITION][$hashvalue_36] => [[p_partkey, $hashvalue_36]]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""p_type"" = CAST('ECONOMY ANODIZED STEEL' AS varchar))] => [[p_partkey, $hashvalue_37]]
+                                                                                            Estimates: {rows: 600000 (36.62MB), cpu: 66000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 132000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            $hashvalue_37 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                                                            LAYOUT: default.p_part_star
+                                                                                            p_partkey := p_partkey:string:0:REGULAR
+                                                                                            p_type := p_type:string:4:REGULAR
+                                                                                - LocalExchange[HASH][$hashvalue_38] (""l_partkey"") => [[o_custkey, o_orderdate, l_partkey, l_suppkey, l_extendedprice, l_discount, $hashvalue_38]]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - RemoteExchange[REPARTITION][$hashvalue_39] => [[o_custkey, o_orderdate, l_partkey, l_suppkey, l_extendedprice, l_discount, $hashvalue_39]]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""o_orderdate"" BETWEEN DATE '1995-01-01' AND DATE '1996-12-31')] => [[o_custkey, o_orderdate, l_partkey, l_suppkey, l_extendedprice, l_discount, $hashvalue_40]]
+                                                                                                Estimates: {rows: 17906532 (3.29GB), cpu: 3366428016.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 6732856032.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                                $hashvalue_40 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                                                                                LAYOUT: default.lo_lineitem_orders_star
+                                                                                                l_partkey := l_partkey:string:10:REGULAR
+                                                                                                o_orderdate := o_orderdate:date:4:REGULAR
+                                                                                                l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                                                                l_suppkey := l_suppkey:string:11:REGULAR
+                                                                                                o_custkey := o_custkey:string:1:REGULAR
+                                                                                                l_discount := l_discount:double:15:REGULAR
+                                                                    - LocalExchange[HASH][$hashvalue_42] (""s_suppkey"") => [[s_suppkey, n_name, $hashvalue_42]]
+                                                                            Estimates: {rows: 30000 (3.40MB), cpu: 14010000.00, memory: 0.00, network: 3570000.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - RemoteExchange[REPARTITION][$hashvalue_43] => [[s_suppkey, n_name, $hashvalue_43]]
+                                                                                Estimates: {rows: 30000 (3.40MB), cpu: 10440000.00, memory: 0.00, network: 3570000.00}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}] => [[s_suppkey, n_name, $hashvalue_44]]
+                                                                                    Estimates: {rows: 30000 (3.40MB), cpu: 3300000.00, memory: 0.00, network: 0.00}/{rows: 30000 (3.40MB), cpu: 6870000.00, memory: 0.00, network: 0.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    $hashvalue_44 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                                    LAYOUT: default.s_supplier_star
+                                                                                    s_suppkey := s_suppkey:string:0:REGULAR
+                                                                                    n_name := n_name:string:8:REGULAR
+                                                        - LocalExchange[HASH][$hashvalue_46] (""c_custkey"") => [[c_custkey, $hashvalue_46]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - RemoteExchange[REPARTITION][$hashvalue_47] => [[c_custkey, $hashvalue_47]]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""r_name_7"" = CAST('AMERICA' AS varchar))] => [[c_custkey, $hashvalue_48]]
+                                                                        Estimates: {rows: 450000 (27.47MB), cpu: 49500000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 99000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_48 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                        LAYOUT: default.c_customer_star
+                                                                        c_custkey := c_custkey:string:0:REGULAR
+                                                                        r_name_7 := r_name:string:13:REGULAR
+"
+12/04/2019 11:51:14.
+--------------------------------------Finished QUERY 8.--------------------------------
+
+--------------------------------------STARTED QUERY 9. ---------------------------------
+12/04/2019 11:51:14.
+"- Output[nation, o_year, sum_profit] => [[n_name, expr_3, sum]]
+        Cost: ?, Output: ? rows (?B)
+        nation := n_name
+        o_year := expr_3
+        sum_profit := sum
+    - RemoteMerge[n_name ASC_NULLS_LAST, expr_3 DESC_NULLS_LAST] => [[n_name, expr_3, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[n_name ASC_NULLS_LAST, expr_3 DESC_NULLS_LAST] => [[n_name, expr_3, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[n_name ASC_NULLS_LAST, expr_3 DESC_NULLS_LAST] => [[n_name, expr_3, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[n_name, expr_3, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[n_name, expr_3, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[n_name, expr_3][$hashvalue] => [[n_name, expr_3, $hashvalue, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum := ""sum""(""sum_27"")
+                            - LocalExchange[HASH][$hashvalue] (""n_name"", ""expr_3"") => [[n_name, expr_3, sum_27, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_28] => [[n_name, expr_3, sum_27, $hashvalue_28]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[n_name, expr_3][$hashvalue_45] => [[n_name, expr_3, $hashvalue_45, sum_27]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_27 := ""sum""(""expr_4"")
+                                        - Project[] => [[n_name, expr_3, expr_4, $hashvalue_45]]
+                                                Estimates: {rows: ? (?), cpu: ?, memory: 3014656332.00, network: ?}
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_45 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""n_name""), 0)), COALESCE(""$operator$hash_code""(""expr_3""), 0))
+                                            - Project[] => [[n_name, expr_3, expr_4]]
+                                                    Estimates: {rows: ? (?), cpu: ?, memory: 3014656332.00, network: ?}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    expr_3 := ""year""(""o_orderdate"")
+                                                    expr_4 := ((""l_extendedprice"" * (1E0 - ""l_discount"")) - (""ps_supplycost"" * ""l_quantity""))
+                                                - InnerJoin[(""l_partkey"" = ""ps_partkey"") AND (""l_suppkey"" = ""ps_suppkey"")][$hashvalue_39, $hashvalue_40] => [[o_orderdate, l_quantity, l_extendedprice, l_discount, n_name, ps_supplycost]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 3014656332.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        Distribution: PARTITIONED
+                                                    - Project[] => [[l_partkey, o_orderdate, l_quantity, l_extendedprice, l_suppkey, l_discount, n_name, $hashvalue_39]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 2707456332.00, network: ?}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_39 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0)), COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                        - InnerJoin[(""l_suppkey"" = ""s_suppkey"")][$hashvalue_29, $hashvalue_36] => [[l_partkey, o_orderdate, l_quantity, l_extendedprice, l_suppkey, l_discount, n_name]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 2707456332.00, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                Distribution: PARTITIONED
+                                                            - RemoteExchange[REPARTITION][$hashvalue_29] => [[l_partkey, o_orderdate, l_quantity, l_extendedprice, l_suppkey, l_discount, $hashvalue_29]]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 2703886332.00, network: ?}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - Project[] => [[o_orderdate, l_partkey, l_suppkey, l_quantity, l_extendedprice, l_discount, $hashvalue_35]]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 2703886332.00, network: ?}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_35 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                                    - InnerJoin[(""p_partkey"" = ""l_partkey"")][$hashvalue_30, $hashvalue_32] => [[o_orderdate, l_partkey, l_suppkey, l_quantity, l_extendedprice, l_discount]]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 2703886332.00, network: ?}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            Distribution: PARTITIONED
+                                                                        - RemoteExchange[REPARTITION][$hashvalue_30] => [[p_partkey, $hashvalue_30]]
+                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""p_name"" LIKE '%green%')] => [[p_partkey, $hashvalue_31]]
+                                                                                    Estimates: {rows: 600000 (36.62MB), cpu: 66000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 132000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    $hashvalue_31 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                                                    LAYOUT: default.p_part_star
+                                                                                    p_partkey := p_partkey:string:0:REGULAR
+                                                                                    p_name := p_name:string:1:REGULAR
+                                                                        - LocalExchange[HASH][$hashvalue_32] (""l_partkey"") => [[o_orderdate, l_partkey, l_suppkey, l_quantity, l_extendedprice, l_discount, $hashvalue_32]]
+                                                                                Estimates: {rows: 17906532 (2.52GB), cpu: 10654386540.00, memory: 0.00, network: 2703886332.00}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - RemoteExchange[REPARTITION][$hashvalue_33] => [[o_orderdate, l_partkey, l_suppkey, l_quantity, l_extendedprice, l_discount, $hashvalue_33]]
+                                                                                    Estimates: {rows: 17906532 (2.52GB), cpu: 7950500208.00, memory: 0.00, network: 2703886332.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[o_orderdate, l_partkey, l_suppkey, l_quantity, l_extendedprice, l_discount, $hashvalue_34]]
+                                                                                        Estimates: {rows: 17906532 (2.52GB), cpu: 2542727544.00, memory: 0.00, network: 0.00}/{rows: 17906532 (2.52GB), cpu: 5246613876.00, memory: 0.00, network: 0.00}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        $hashvalue_34 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                                                                        LAYOUT: default.lo_lineitem_orders_star
+                                                                                        l_partkey := l_partkey:string:10:REGULAR
+                                                                                        o_orderdate := o_orderdate:date:4:REGULAR
+                                                                                        l_quantity := l_quantity:double:13:REGULAR
+                                                                                        l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                                                        l_suppkey := l_suppkey:string:11:REGULAR
+                                                                                        l_discount := l_discount:double:15:REGULAR
+                                                            - LocalExchange[HASH][$hashvalue_36] (""s_suppkey"") => [[s_suppkey, n_name, $hashvalue_36]]
+                                                                    Estimates: {rows: 30000 (3.40MB), cpu: 14010000.00, memory: 0.00, network: 3570000.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - RemoteExchange[REPARTITION][$hashvalue_37] => [[s_suppkey, n_name, $hashvalue_37]]
+                                                                        Estimates: {rows: 30000 (3.40MB), cpu: 10440000.00, memory: 0.00, network: 3570000.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}] => [[s_suppkey, n_name, $hashvalue_38]]
+                                                                            Estimates: {rows: 30000 (3.40MB), cpu: 3300000.00, memory: 0.00, network: 0.00}/{rows: 30000 (3.40MB), cpu: 6870000.00, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_38 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                            LAYOUT: default.s_supplier_star
+                                                                            s_suppkey := s_suppkey:string:0:REGULAR
+                                                                            n_name := n_name:string:8:REGULAR
+                                                    - LocalExchange[HASH][$hashvalue_40] (""ps_partkey"", ""ps_suppkey"") => [[ps_partkey, ps_suppkey, ps_supplycost, $hashvalue_40]]
+                                                            Estimates: {rows: 2400000 (292.97MB), cpu: 1557600000.00, memory: 0.00, network: 328800000.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - Project[] => [[ps_partkey, ps_suppkey, ps_supplycost, $hashvalue_41]]
+                                                                Estimates: {rows: 2400000 (292.97MB), cpu: 1250400000.00, memory: 0.00, network: 328800000.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - RemoteExchange[REPARTITION][$hashvalue_42] => [[ps_partkey, ps_suppkey, ps_supplycost, $hashvalue_41, $hashvalue_42]]
+                                                                    Estimates: {rows: 2400000 (313.57MB), cpu: 943200000.00, memory: 0.00, network: 328800000.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=ps_partsupp_star, analyzePartitionValues=Optional.empty}] => [[ps_partkey, ps_suppkey, ps_supplycost, $hashvalue_43, $hashvalue_44]]
+                                                                        Estimates: {rows: 2400000 (313.57MB), cpu: 285600000.00, memory: 0.00, network: 0.00}/{rows: 2400000 (313.57MB), cpu: 614400000.00, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_43 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_partkey""), 0)), COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                                        $hashvalue_44 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                                        LAYOUT: default.ps_partsupp_star
+                                                                        ps_suppkey := ps_suppkey:string:1:REGULAR
+                                                                        ps_supplycost := ps_supplycost:double:3:REGULAR
+                                                                        ps_partkey := ps_partkey:string:0:REGULAR
+"
+12/04/2019 11:51:16.
+--------------------------------------Finished QUERY 9.--------------------------------
+
+--------------------------------------STARTED QUERY 10. ---------------------------------
+12/04/2019 11:51:16.
+"- Output[c_custkey, c_name, revenue, c_acctbal, n_name, c_address, c_phone, c_comment] => [[c_custkey, c_name, sum, c_acctbal, n_name, c_address, c_phone, c_comment]]
+        Cost: ?, Output: ? rows (?B)
+        revenue := sum
+    - TopN[20 by (sum DESC_NULLS_LAST)] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalExchange[SINGLE] () => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - TopNPartial[20 by (sum DESC_NULLS_LAST)] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment][$hashvalue] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, $hashvalue, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum := ""sum""(""sum_45"")
+                            - LocalExchange[HASH][$hashvalue] (""c_custkey"", ""c_name"", ""c_acctbal"", ""c_phone"", ""n_name"", ""c_address"", ""c_comment"") => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, sum_45, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - Aggregate(PARTIAL)[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment][$hashvalue_51] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, $hashvalue_51, sum_45]]
+                                        Cost: ?, Output: ? rows (?B)
+                                        sum_45 := ""sum""(""expr_7"")
+                                    - Project[] => [[c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment, expr_7, $hashvalue_51]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            expr_7 := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                            $hashvalue_51 := ""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0)), COALESCE(""$operator$hash_code""(""c_name""), 0)), COALESCE(""$operator$hash_code""(""c_acctbal""), 0)), COALESCE(""$operator$hash_code""(""c_phone""), 0)), COALESCE(""$operator$hash_code""(""n_name""), 0)), COALESCE(""$operator$hash_code""(""c_address""), 0)), COALESCE(""$operator$hash_code""(""c_comment""), 0))
+                                        - InnerJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_46, $hashvalue_48] => [[c_custkey, c_name, c_address, c_phone, c_acctbal, c_comment, n_name, l_extendedprice, l_discount]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                Distribution: PARTITIONED
+                                            - RemoteExchange[REPARTITION][$hashvalue_46] => [[c_custkey, c_name, c_address, c_phone, c_acctbal, c_comment, n_name, $hashvalue_46]]
+                                                    Estimates: {rows: 450000 (149.35MB), cpu: 465750000.00, memory: 0.00, network: 156600000.00}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}] => [[c_custkey, c_name, c_address, c_phone, c_acctbal, c_comment, n_name, $hashvalue_47]]
+                                                        Estimates: {rows: 450000 (149.35MB), cpu: 152550000.00, memory: 0.00, network: 0.00}/{rows: 450000 (149.35MB), cpu: 309150000.00, memory: 0.00, network: 0.00}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        $hashvalue_47 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                        LAYOUT: default.c_customer_star
+                                                        c_custkey := c_custkey:string:0:REGULAR
+                                                        c_acctbal := c_acctbal:double:5:REGULAR
+                                                        c_phone := c_phone:string:4:REGULAR
+                                                        c_address := c_address:string:2:REGULAR
+                                                        c_name := c_name:string:1:REGULAR
+                                                        n_name := n_name:string:9:REGULAR
+                                                        c_comment := c_comment:string:7:REGULAR
+                                            - LocalExchange[HASH][$hashvalue_48] (""o_custkey"") => [[l_extendedprice, o_custkey, l_discount, $hashvalue_48]]
+                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - RemoteExchange[REPARTITION][$hashvalue_49] => [[l_extendedprice, o_custkey, l_discount, $hashvalue_49]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (((""l_returnflag"" = CAST('R' AS varchar)) AND (""o_orderdate"" >= DATE '1993-10-01')) AND (""o_orderdate"" < DATE '1994-01-01'))] => [[l_extendedprice, o_custkey, l_discount, $hashvalue_50]]
+                                                            Estimates: {rows: 17906532 (1.37GB), cpu: 2381568756.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4763137512.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_50 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                            LAYOUT: default.lo_lineitem_orders_star
+                                                            l_returnflag := l_returnflag:string:17:REGULAR
+                                                            o_orderdate := o_orderdate:date:4:REGULAR
+                                                            l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                            o_custkey := o_custkey:string:1:REGULAR
+                                                            l_discount := l_discount:double:15:REGULAR
+"
+12/04/2019 11:51:18.
+--------------------------------------Finished QUERY 10.--------------------------------
+
+--------------------------------------STARTED QUERY 11. ---------------------------------
+12/04/2019 11:51:18.
+"- Output[ps_partkey, value] => [[ps_partkey, sum_3]]
+        Cost: ?, Output: ? rows (?B)
+        value := sum_3
+    - RemoteMerge[sum_3 DESC_NULLS_LAST] => [[ps_partkey, sum_3]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[sum_3 DESC_NULLS_LAST] => [[ps_partkey, sum_3]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[sum_3 DESC_NULLS_LAST] => [[ps_partkey, sum_3]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[ps_partkey, sum_3]]
+                        Cost: ?, Output: ? rows (?B)
+                    - FilterProject[filterPredicate = (""sum_3"" > ""expr_28"")] => [[ps_partkey, sum_3]]
+                            Cost: ?, Output: ? rows (?B)
+                        - CrossJoin => [[ps_partkey, sum_3, expr_28]]
+                                Cost: ?, Output: ? rows (?B)
+                                Distribution: REPLICATED
+                            - Project[] => [[ps_partkey, sum_3]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - Aggregate(FINAL)[ps_partkey][$hashvalue] => [[ps_partkey, $hashvalue, sum_3]]
+                                        Cost: ?, Output: ? rows (?B)
+                                        sum_3 := ""sum""(""sum_39"")
+                                    - LocalExchange[HASH][$hashvalue] (""ps_partkey"") => [[ps_partkey, sum_39, $hashvalue]]
+                                            Cost: ?, Output: ? rows (?B)
+                                        - RemoteExchange[REPARTITION][$hashvalue_41] => [[ps_partkey, sum_39, $hashvalue_41]]
+                                                Cost: ?, Output: ? rows (?B)
+                                            - Aggregate(PARTIAL)[ps_partkey][$hashvalue_47] => [[ps_partkey, $hashvalue_47, sum_39]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    sum_39 := ""sum""(""expr_2"")
+                                                - Project[] => [[ps_partkey, expr_2, $hashvalue_47]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        expr_2 := (""ps_supplycost"" * CAST(""ps_availqty"" AS double))
+                                                        $hashvalue_47 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_partkey""), 0))
+                                                    - InnerJoin[(""ps_suppkey"" = ""s_suppkey"")][$hashvalue_42, $hashvalue_44] => [[ps_partkey, ps_availqty, ps_supplycost]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            Distribution: PARTITIONED
+                                                        - RemoteExchange[REPARTITION][$hashvalue_42] => [[ps_partkey, ps_suppkey, ps_availqty, ps_supplycost, $hashvalue_42]]
+                                                                Estimates: {rows: 2400000 (304.41MB), cpu: 936000000.00, memory: 0.00, network: 319200000.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=ps_partsupp_star, analyzePartitionValues=Optional.empty}] => [[ps_partkey, ps_suppkey, ps_availqty, ps_supplycost, $hashvalue_43]]
+                                                                    Estimates: {rows: 2400000 (304.41MB), cpu: 297600000.00, memory: 0.00, network: 0.00}/{rows: 2400000 (304.41MB), cpu: 616800000.00, memory: 0.00, network: 0.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_43 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                                    LAYOUT: default.ps_partsupp_star
+                                                                    ps_availqty := ps_availqty:int:2:REGULAR
+                                                                    ps_suppkey := ps_suppkey:string:1:REGULAR
+                                                                    ps_supplycost := ps_supplycost:double:3:REGULAR
+                                                                    ps_partkey := ps_partkey:string:0:REGULAR
+                                                        - LocalExchange[HASH][$hashvalue_44] (""s_suppkey"") => [[s_suppkey, $hashvalue_44]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - RemoteExchange[REPARTITION][$hashvalue_45] => [[s_suppkey, $hashvalue_45]]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""n_name"" = CAST('GERMANY' AS varchar)) AND (""n_nationkey"" = ""s_nationkey""))] => [[s_suppkey, $hashvalue_46]]
+                                                                        Estimates: {rows: 30000 (1.83MB), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 13200000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_46 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                        LAYOUT: default.s_supplier_star
+                                                                        n_nationkey := n_nationkey:string:7:REGULAR
+                                                                        s_nationkey := s_nationkey:string:3:REGULAR
+                                                                        s_suppkey := s_suppkey:string:0:REGULAR
+                                                                        n_name := n_name:string:8:REGULAR
+                            - LocalExchange[SINGLE] () => [[expr_28]]
+                                    Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPLICATE] => [[expr_28]]
+                                        Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                        Cost: ?, Output: ? rows (?B)
+                                    - EnforceSingleRow => [[expr_28]]
+                                            Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                            Cost: ?, Output: ? rows (?B)
+                                        - LocalExchange[SINGLE] () => [[expr_28]]
+                                                Cost: ?, Output: ? rows (?B)
+                                            - Project[] => [[expr_28]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    expr_28 := (""sum_27"" * 1E-4)
+                                                - LocalExchange[ROUND_ROBIN] () => [[sum_27]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - Aggregate(FINAL) => [[sum_27]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            sum_27 := ""sum""(""sum_40"")
+                                                        - LocalExchange[SINGLE] () => [[sum_40]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - RemoteExchange[GATHER] => [[sum_40]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - Aggregate(PARTIAL) => [[sum_40]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        sum_40 := ""sum""(""expr_26"")
+                                                                    - Project[] => [[expr_26]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            expr_26 := (""ps_supplycost_7"" * CAST(""ps_availqty_6"" AS double))
+                                                                        - InnerJoin[(""ps_suppkey_5"" = ""s_suppkey_11"")][$hashvalue_48, $hashvalue_50] => [[ps_availqty_6, ps_supplycost_7]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                Distribution: PARTITIONED
+                                                                            - RemoteExchange[REPARTITION][$hashvalue_48] => [[ps_suppkey_5, ps_availqty_6, ps_supplycost_7, $hashvalue_48]]
+                                                                                    Estimates: {rows: 2400000 (178.53MB), cpu: 540000000.00, memory: 0.00, network: 187200000.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=ps_partsupp_star, analyzePartitionValues=Optional.empty}] => [[ps_suppkey_5, ps_availqty_6, ps_supplycost_7, $hashvalue_49]]
+                                                                                        Estimates: {rows: 2400000 (178.53MB), cpu: 165600000.00, memory: 0.00, network: 0.00}/{rows: 2400000 (178.53MB), cpu: 352800000.00, memory: 0.00, network: 0.00}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        $hashvalue_49 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_suppkey_5""), 0))
+                                                                                        LAYOUT: default.ps_partsupp_star
+                                                                                        ps_availqty_6 := ps_availqty:int:2:REGULAR
+                                                                                        ps_supplycost_7 := ps_supplycost:double:3:REGULAR
+                                                                                        ps_suppkey_5 := ps_suppkey:string:1:REGULAR
+                                                                            - LocalExchange[HASH][$hashvalue_50] (""s_suppkey_11"") => [[s_suppkey_11, $hashvalue_50]]
+                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - RemoteExchange[REPARTITION][$hashvalue_51] => [[s_suppkey_11, $hashvalue_51]]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""n_name_19"" = CAST('GERMANY' AS varchar)) AND (""n_nationkey_18"" = ""s_nationkey_14""))] => [[s_suppkey_11, $hashvalue_52]]
+                                                                                            Estimates: {rows: 30000 (1.83MB), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 13200000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            $hashvalue_52 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey_11""), 0))
+                                                                                            LAYOUT: default.s_supplier_star
+                                                                                            n_nationkey_18 := n_nationkey:string:7:REGULAR
+                                                                                            n_name_19 := n_name:string:8:REGULAR
+                                                                                            s_nationkey_14 := s_nationkey:string:3:REGULAR
+                                                                                            s_suppkey_11 := s_suppkey:string:0:REGULAR
+"
+12/04/2019 11:51:20.
+--------------------------------------Finished QUERY 11.--------------------------------
+
+--------------------------------------STARTED QUERY 12. ---------------------------------
+12/04/2019 11:51:20.
+"- Output[l_shipmode, high_line_count, low_line_count] => [[l_shipmode, sum, sum_2]]
+        Cost: ?, Output: ? rows (?B)
+        high_line_count := sum
+        low_line_count := sum_2
+    - RemoteMerge[l_shipmode ASC_NULLS_LAST] => [[l_shipmode, sum, sum_2]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[l_shipmode ASC_NULLS_LAST] => [[l_shipmode, sum, sum_2]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[l_shipmode ASC_NULLS_LAST] => [[l_shipmode, sum, sum_2]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[l_shipmode, sum, sum_2]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[l_shipmode, sum_2, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[l_shipmode][$hashvalue] => [[l_shipmode, $hashvalue, sum_2, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_2 := ""sum""(""sum_15"")
+                                sum := ""sum""(""sum_14"")
+                            - LocalExchange[HASH][$hashvalue] (""l_shipmode"") => [[l_shipmode, sum_14, sum_15, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_16] => [[l_shipmode, sum_14, sum_15, $hashvalue_16]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[l_shipmode][$hashvalue_17] => [[l_shipmode, $hashvalue_17, sum_14, sum_15]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_14 := ""sum""(""expr"")
+                                            sum_15 := ""sum""(""expr_1"")
+                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((((""l_receiptdate"" >= DATE '1994-01-01') AND (""l_receiptdate"" < DATE '1995-01-01')) AND ((""l_shipmode"" IN (CAST('MAIL' AS varchar), CAST('SHIP' AS varchar))) AND (""l_commitdate"" < ""l_receiptdate""))) AND (""l_shipdate"" < ""l_commitdate""))] => [[l_shipmode, expr, expr_1, $hashvalue_17]]
+                                                Estimates: {rows: 17906532 (1.37GB), cpu: 2238316500.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4476633000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                Cost: ?, Output: ? rows (?B)
+                                                expr := CAST((CASE WHEN ((""o_orderpriority"" = CAST('1-URGENT' AS varchar)) OR (""o_orderpriority"" = CAST('2-HIGH' AS varchar))) THEN 1 ELSE 0 END) AS bigint)
+                                                expr_1 := CAST((CASE WHEN ((""o_orderpriority"" <> CAST('1-URGENT' AS varchar)) AND (""o_orderpriority"" <> CAST('2-HIGH' AS varchar))) THEN 1 ELSE 0 END) AS bigint)
+                                                $hashvalue_17 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_shipmode""), 0))
+                                                LAYOUT: default.lo_lineitem_orders_star
+                                                l_commitdate := l_commitdate:date:20:REGULAR
+                                                l_receiptdate := l_receiptdate:date:21:REGULAR
+                                                l_shipmode := l_shipmode:string:23:REGULAR
+                                                l_shipdate := l_shipdate:date:19:REGULAR
+                                                o_orderpriority := o_orderpriority:string:5:REGULAR
+"
+12/04/2019 11:51:22.
+--------------------------------------Finished QUERY 12.--------------------------------
+
+--------------------------------------STARTED QUERY 13. ---------------------------------
+12/04/2019 11:51:22.
+"- Output[c_count, custdist] => [[count, count_12]]
+        Cost: ?, Output: ? rows (?B)
+        c_count := count
+        custdist := count_12
+    - RemoteMerge[count_12 DESC_NULLS_LAST, count DESC_NULLS_LAST] => [[count, count_12]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[count_12 DESC_NULLS_LAST, count DESC_NULLS_LAST] => [[count, count_12]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[count_12 DESC_NULLS_LAST, count DESC_NULLS_LAST] => [[count, count_12]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[count, count_12]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Aggregate(FINAL)[count] => [[count, count_12]]
+                            Cost: ?, Output: ? rows (?B)
+                            count_12 := ""count""(""count_21"")
+                        - LocalExchange[HASH][$hashvalue] (""count"") => [[count, count_21, $hashvalue]]
+                                Cost: ?, Output: ? rows (?B)
+                            - RemoteExchange[REPARTITION][$hashvalue_22] => [[count, count_21, $hashvalue_22]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - Project[] => [[count, count_21, $hashvalue_33]]
+                                        Cost: ?, Output: ? rows (?B)
+                                        $hashvalue_33 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""count""), 0))
+                                    - Aggregate(PARTIAL)[count] => [[count, count_21]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            count_21 := ""count""(*)
+                                        - Project[] => [[count]]
+                                                Cost: ?, Output: ? rows (?B)
+                                            - Aggregate[c_custkey][$hashvalue_32] => [[c_custkey, $hashvalue_32, count]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    count := ""count""(""o_orderkey"")
+                                                - Project[] => [[c_custkey, o_orderkey, $hashvalue_32]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        $hashvalue_32 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                    - Aggregate(FINAL)[c_custkey, o_orderkey][$hashvalue_23] => [[c_custkey, o_orderkey, $hashvalue_23]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - LocalExchange[HASH][$hashvalue_24] (""c_custkey"") => [[c_custkey, o_orderkey, $hashvalue_23, $hashvalue_24]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - Project[] => [[c_custkey, o_orderkey, $hashvalue_30, $hashvalue_31]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_31 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                - Aggregate(PARTIAL)[c_custkey, o_orderkey][$hashvalue_30] => [[c_custkey, o_orderkey, $hashvalue_30]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - Project[] => [[c_custkey, o_orderkey, $hashvalue_30]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_30 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0)), COALESCE(""$operator$hash_code""(""o_orderkey""), 0))
+                                                                        - LeftJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_25, $hashvalue_27] => [[c_custkey, o_orderkey]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                Distribution: PARTITIONED
+                                                                            - RemoteExchange[REPARTITION][$hashvalue_25] => [[c_custkey, $hashvalue_25]]
+                                                                                    Estimates: {rows: 450000 (27.47MB), cpu: 82350000.00, memory: 0.00, network: 28800000.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}] => [[c_custkey, $hashvalue_26]]
+                                                                                        Estimates: {rows: 450000 (27.47MB), cpu: 24750000.00, memory: 0.00, network: 0.00}/{rows: 450000 (27.47MB), cpu: 53550000.00, memory: 0.00, network: 0.00}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        $hashvalue_26 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                                        LAYOUT: default.c_customer_star
+                                                                                        c_custkey := c_custkey:string:0:REGULAR
+                                                                            - LocalExchange[HASH][$hashvalue_27] (""o_custkey"") => [[o_custkey, o_orderkey, $hashvalue_27]]
+                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - RemoteExchange[REPARTITION][$hashvalue_28] => [[o_custkey, o_orderkey, $hashvalue_28]]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((NOT (""o_orderkey"" IS NULL)) AND (NOT (""o_comment"" LIKE '%special%requests%')))] => [[o_custkey, o_orderkey, $hashvalue_29]]
+                                                                                            Estimates: {rows: 17906532 (1.98GB), cpu: 2954577780.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 5909155560.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            $hashvalue_29 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                                            LAYOUT: default.lo_lineitem_orders_star
+                                                                                            o_custkey := o_custkey:string:1:REGULAR
+                                                                                            o_comment := o_comment:string:8:REGULAR
+                                                                                            o_orderkey := o_orderkey:string:0:REGULAR
+"
+12/04/2019 11:51:23.
+--------------------------------------Finished QUERY 13.--------------------------------
+
+--------------------------------------STARTED QUERY 14. ---------------------------------
+12/04/2019 11:51:23.
+"- Output[promo_revenue] => [[expr_3]]
+        Cost: ?, Output: ? rows (?B)
+        promo_revenue := expr_3
+    - Project[] => [[expr_3]]
+            Cost: ?, Output: ? rows (?B)
+            expr_3 := ((1E2 * ""sum"") / ""sum_2"")
+        - LocalExchange[ROUND_ROBIN] () => [[sum, sum_2]]
+                Cost: ?, Output: ? rows (?B)
+            - Aggregate(FINAL) => [[sum_2, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                    sum_2 := ""sum""(""sum_8"")
+                    sum := ""sum""(""sum_7"")
+                - LocalExchange[SINGLE] () => [[sum_7, sum_8]]
+                        Cost: ?, Output: ? rows (?B)
+                    - RemoteExchange[GATHER] => [[sum_7, sum_8]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(PARTIAL) => [[sum_7, sum_8]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_7 := ""sum""(""expr"")
+                                sum_8 := ""sum""(""expr_1"")
+                            - Project[] => [[expr, expr_1]]
+                                    Estimates: {rows: ? (?), cpu: ?, memory: 71400000.00, network: ?}
+                                    Cost: ?, Output: ? rows (?B)
+                                    expr := (CASE WHEN (""p_type"" LIKE 'PROMO%') THEN (""l_extendedprice"" * (1E0 - ""l_discount"")) ELSE 0E0 END)
+                                    expr_1 := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                                - InnerJoin[(""l_partkey"" = ""p_partkey"")][$hashvalue, $hashvalue_10] => [[l_extendedprice, l_discount, p_type]]
+                                        Estimates: {rows: ? (?), cpu: ?, memory: 71400000.00, network: ?}
+                                        Cost: ?, Output: ? rows (?B)
+                                        Distribution: PARTITIONED
+                                    - RemoteExchange[REPARTITION][$hashvalue] => [[l_partkey, l_extendedprice, l_discount, $hashvalue]]
+                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                            Cost: ?, Output: ? rows (?B)
+                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""l_shipdate"" >= DATE '1995-09-01') AND (""l_shipdate"" < DATE '1995-10-01'))] => [[l_partkey, l_extendedprice, l_discount, $hashvalue_9]]
+                                                Estimates: {rows: 17906532 (1.37GB), cpu: 1396709496.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 2793418992.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_9 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                                LAYOUT: default.lo_lineitem_orders_star
+                                                l_partkey := l_partkey:string:10:REGULAR
+                                                l_extendedprice := l_extendedprice:double:14:REGULAR
+                                                l_shipdate := l_shipdate:date:19:REGULAR
+                                                l_discount := l_discount:double:15:REGULAR
+                                    - LocalExchange[HASH][$hashvalue_10] (""p_partkey"") => [[p_partkey, p_type, $hashvalue_10]]
+                                            Estimates: {rows: 600000 (68.09MB), cpu: 280200000.00, memory: 0.00, network: 71400000.00}
+                                            Cost: ?, Output: ? rows (?B)
+                                        - RemoteExchange[REPARTITION][$hashvalue_11] => [[p_partkey, p_type, $hashvalue_11]]
+                                                Estimates: {rows: 600000 (68.09MB), cpu: 208800000.00, memory: 0.00, network: 71400000.00}
+                                                Cost: ?, Output: ? rows (?B)
+                                            - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}] => [[p_partkey, p_type, $hashvalue_12]]
+                                                    Estimates: {rows: 600000 (68.09MB), cpu: 66000000.00, memory: 0.00, network: 0.00}/{rows: 600000 (68.09MB), cpu: 137400000.00, memory: 0.00, network: 0.00}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    $hashvalue_12 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                    LAYOUT: default.p_part_star
+                                                    p_partkey := p_partkey:string:0:REGULAR
+                                                    p_type := p_type:string:4:REGULAR
+"
+12/04/2019 11:51:25.
+--------------------------------------Finished QUERY 14.--------------------------------
+
+--------------------------------------STARTED QUERY 15. ---------------------------------
+--------------------------------------Finished QUERY 15.--------------------------------
+
+--------------------------------------STARTED QUERY 16. ---------------------------------
+12/04/2019 11:51:25.
+"- Output[p_brand, p_type, p_size, supplier_cnt] => [[p_brand, p_type, p_size, count]]
+        Cost: ?, Output: ? rows (?B)
+        supplier_cnt := count
+    - TopN[20000 by (count DESC_NULLS_LAST, p_brand ASC_NULLS_LAST, p_type ASC_NULLS_LAST, p_size ASC_NULLS_LAST)] => [[p_brand, p_type, p_size, count]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalExchange[SINGLE] () => [[p_brand, p_type, p_size, count]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[p_brand, p_type, p_size, count]]
+                    Cost: ?, Output: ? rows (?B)
+                - TopNPartial[20000 by (count DESC_NULLS_LAST, p_brand ASC_NULLS_LAST, p_type ASC_NULLS_LAST, p_size ASC_NULLS_LAST)] => [[p_brand, p_type, p_size, count]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[p_brand, p_type, p_size, count]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[p_brand, p_type, p_size][$hashvalue] => [[p_brand, p_type, p_size, $hashvalue, count]]
+                                Cost: ?, Output: ? rows (?B)
+                                count := ""count""(""count_32"")
+                            - LocalExchange[HASH][$hashvalue] (""p_brand"", ""p_type"", ""p_size"") => [[p_brand, p_type, p_size, count_32, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_33] => [[p_brand, p_type, p_size, count_32, $hashvalue_33]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[p_brand, p_type, p_size][$hashvalue_46] => [[p_brand, p_type, p_size, $hashvalue_46, count_32]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            count_32 := ""count""(""ps_suppkey"")
+                                        - Project[] => [[p_brand, p_type, p_size, ps_suppkey, $hashvalue_46]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_46 := ""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_brand""), 0)), COALESCE(""$operator$hash_code""(""p_type""), 0)), COALESCE(""$operator$hash_code""(""p_size""), 0))
+                                            - Aggregate(FINAL)[p_brand, p_type, p_size, ps_suppkey][$hashvalue_34] => [[p_brand, p_type, p_size, ps_suppkey, $hashvalue_34]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - LocalExchange[HASH][$hashvalue_34] (""p_brand"", ""p_type"", ""p_size"", ""ps_suppkey"") => [[p_brand, p_type, p_size, ps_suppkey, $hashvalue_34]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - Aggregate(PARTIAL)[p_brand, p_type, p_size, ps_suppkey][$hashvalue_45] => [[p_brand, p_type, p_size, ps_suppkey, $hashvalue_45]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - FilterProject[filterPredicate = (NOT ""expr_9"")] => [[p_brand, p_type, p_size, ps_suppkey, $hashvalue_45]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                $hashvalue_45 := ""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_brand""), 0)), COALESCE(""$operator$hash_code""(""p_type""), 0)), COALESCE(""$operator$hash_code""(""p_size""), 0)), COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                            - Project[] => [[ps_suppkey, p_brand, p_type, p_size, expr_9]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - SemiJoin[ps_suppkey = s_suppkey][$hashvalue_35, $hashvalue_42] => [[ps_suppkey, p_brand, p_type, p_size, $hashvalue_35, expr_9]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        Distribution: PARTITIONED
+                                                                    - RemoteExchange[REPARTITION][$hashvalue_35] => [[ps_suppkey, p_brand, p_type, p_size, $hashvalue_35]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - Project[] => [[ps_suppkey, p_brand, p_type, p_size, $hashvalue_41]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                $hashvalue_41 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                                            - InnerJoin[(""ps_partkey"" = ""p_partkey"")][$hashvalue_36, $hashvalue_38] => [[ps_suppkey, p_brand, p_type, p_size]]
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    Distribution: PARTITIONED
+                                                                                - RemoteExchange[REPARTITION][$hashvalue_36] => [[ps_partkey, ps_suppkey, $hashvalue_36]]
+                                                                                        Estimates: {rows: 2400000 (272.37MB), cpu: 835200000.00, memory: 0.00, network: 285600000.00}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=ps_partsupp_star, analyzePartitionValues=Optional.empty}] => [[ps_partkey, ps_suppkey, $hashvalue_37]]
+                                                                                            Estimates: {rows: 2400000 (272.37MB), cpu: 264000000.00, memory: 0.00, network: 0.00}/{rows: 2400000 (272.37MB), cpu: 549600000.00, memory: 0.00, network: 0.00}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            $hashvalue_37 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_partkey""), 0))
+                                                                                            LAYOUT: default.ps_partsupp_star
+                                                                                            ps_suppkey := ps_suppkey:string:1:REGULAR
+                                                                                            ps_partkey := ps_partkey:string:0:REGULAR
+                                                                                - LocalExchange[HASH][$hashvalue_38] (""p_partkey"") => [[p_partkey, p_brand, p_type, p_size, $hashvalue_38]]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                    - RemoteExchange[REPARTITION][$hashvalue_39] => [[p_partkey, p_brand, p_type, p_size, $hashvalue_39]]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}, filterPredicate = (((""p_brand"" <> CAST('Brand#45' AS varchar)) AND (""p_size"" IN (3, 9, 14, 19, 23, 36, 45, 49))) AND (NOT (""p_type"" LIKE 'MEDIUM POLISHED%')))] => [[p_partkey, p_brand, p_type, p_size, $hashvalue_40]]
+                                                                                                Estimates: {rows: 600000 (102.42MB), cpu: 102000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 204000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                                $hashvalue_40 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                                                                LAYOUT: default.p_part_star
+                                                                                                p_partkey := p_partkey:string:0:REGULAR
+                                                                                                p_brand := p_brand:string:3:REGULAR
+                                                                                                p_type := p_type:string:4:REGULAR
+                                                                                                p_size := p_size:int:5:REGULAR
+                                                                    - LocalExchange[SINGLE] () => [[s_suppkey, $hashvalue_42]]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - RemoteExchange[REPARTITION - REPLICATE NULLS AND ANY][$hashvalue_43] => [[s_suppkey, $hashvalue_43]]
+                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""s_comment"" LIKE '%Customer%Complaints%')] => [[s_suppkey, $hashvalue_44]]
+                                                                                    Estimates: {rows: 30000 (1.83MB), cpu: 3300000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    $hashvalue_44 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                                    LAYOUT: default.s_supplier_star
+                                                                                    s_comment := s_comment:string:6:REGULAR
+                                                                                    s_suppkey := s_suppkey:string:0:REGULAR
+"
+12/04/2019 11:51:27.
+--------------------------------------Finished QUERY 16.--------------------------------
+
+--------------------------------------STARTED QUERY 17. ---------------------------------
+12/04/2019 11:51:27.
+"- Output[avg_yearly] => [[expr_32]]
+        Cost: ?, Output: ? rows (?B)
+        avg_yearly := expr_32
+    - Project[] => [[expr_32]]
+            Cost: ?, Output: ? rows (?B)
+            expr_32 := (""sum"" / 7E0)
+        - LocalExchange[ROUND_ROBIN] () => [[sum]]
+                Cost: ?, Output: ? rows (?B)
+            - Aggregate(FINAL) => [[sum]]
+                    Cost: ?, Output: ? rows (?B)
+                    sum := ""sum""(""sum_39"")
+                - LocalExchange[SINGLE] () => [[sum_39]]
+                        Cost: ?, Output: ? rows (?B)
+                    - RemoteExchange[GATHER] => [[sum_39]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(PARTIAL) => [[sum_39]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_39 := ""sum""(""l_extendedprice"")
+                            - FilterProject[filterPredicate = (""l_quantity"" < (2E-1 * COALESCE(""avg"", ""avg_38"")))] => [[l_extendedprice]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - CrossJoin => [[l_quantity, l_extendedprice, avg, avg_38]]
+                                        Cost: ?, Output: ? rows (?B)
+                                        Distribution: REPLICATED
+                                    - LeftJoin[(""l_partkey"" = ""l_partkey_11"")][$hashvalue, $hashvalue_45] => [[l_quantity, l_extendedprice, avg]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            Distribution: PARTITIONED
+                                        - InnerJoin[(""l_partkey"" = ""p_partkey"")][$hashvalue, $hashvalue_42] => [[l_partkey, l_quantity, l_extendedprice, $hashvalue]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                Distribution: PARTITIONED
+                                            - RemoteExchange[REPARTITION][$hashvalue] => [[l_partkey, l_quantity, l_extendedprice, $hashvalue]]
+                                                    Estimates: {rows: 17906532 (1.37GB), cpu: 4243848084.00, memory: 0.00, network: 1468335624.00}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[l_partkey, l_quantity, l_extendedprice, $hashvalue_41]]
+                                                        Estimates: {rows: 17906532 (1.37GB), cpu: 1307176836.00, memory: 0.00, network: 0.00}/{rows: 17906532 (1.37GB), cpu: 2775512460.00, memory: 0.00, network: 0.00}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        $hashvalue_41 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                                        LAYOUT: default.lo_lineitem_orders_star
+                                                        l_partkey := l_partkey:string:10:REGULAR
+                                                        l_quantity := l_quantity:double:13:REGULAR
+                                                        l_extendedprice := l_extendedprice:double:14:REGULAR
+                                            - LocalExchange[HASH][$hashvalue_42] (""p_partkey"") => [[p_partkey, $hashvalue_42]]
+                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - RemoteExchange[REPARTITION][$hashvalue_43] => [[p_partkey, $hashvalue_43]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""p_brand"" = CAST('Brand#23' AS varchar)) AND (""p_container"" = CAST('MED BOX' AS varchar)))] => [[p_partkey, p_brand, p_container, $hashvalue_44]]
+                                                            Estimates: {rows: 600000 (99.56MB), cpu: 99000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 198000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_44 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                            LAYOUT: default.p_part_star
+                                                            p_partkey := p_partkey:string:0:REGULAR
+                                                            p_container := p_container:string:6:REGULAR
+                                                            p_brand := p_brand:string:3:REGULAR
+                                        - Aggregate(FINAL)[l_partkey_11][$hashvalue_45] => [[l_partkey_11, $hashvalue_45, avg]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                avg := ""avg""(""avg_40"")
+                                            - LocalExchange[HASH][$hashvalue_45] (""l_partkey_11"") => [[l_partkey_11, avg_40, $hashvalue_45]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                - RemoteExchange[REPARTITION][$hashvalue_46] => [[l_partkey_11, avg_40, $hashvalue_46]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - Aggregate(PARTIAL)[l_partkey_11][$hashvalue_47] => [[l_partkey_11, $hashvalue_47, avg_40]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            avg_40 := ""avg""(""l_quantity_14"")
+                                                        - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[l_partkey_11, l_quantity_14, $hashvalue_47]]
+                                                                Estimates: {rows: 17906532 (1.22GB), cpu: 1146018048.00, memory: 0.00, network: 0.00}/{rows: 17906532 (1.22GB), cpu: 2453194884.00, memory: 0.00, network: 0.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                $hashvalue_47 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey_11""), 0))
+                                                                LAYOUT: default.lo_lineitem_orders_star
+                                                                l_partkey_11 := l_partkey:string:10:REGULAR
+                                                                l_quantity_14 := l_quantity:double:13:REGULAR
+                                    - LocalExchange[SINGLE] () => [[avg_38]]
+                                            Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 45.00}
+                                            Cost: ?, Output: ? rows (?B)
+                                        - RemoteExchange[REPLICATE] => [[avg_38]]
+                                                Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 45.00}
+                                                Cost: ?, Output: ? rows (?B)
+                                            - Aggregate => [[avg_38]]
+                                                    Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 0.00}
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    avg_38 := ""avg""(""expr_37"")
+                                                - Values => [[expr_37]]
+                                                        Estimates: {rows: 1 (1B), cpu: 0.00, memory: 0.00, network: 0.00}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        (null)
+"
+12/04/2019 11:51:29.
+--------------------------------------Finished QUERY 17.--------------------------------
+
+--------------------------------------STARTED QUERY 18. ---------------------------------
+12/04/2019 11:51:29.
+"- Output[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, _col5] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+        Cost: ?, Output: ? rows (?B)
+        _col5 := sum_41
+    - TopN[100 by (o_totalprice DESC_NULLS_LAST, o_orderdate ASC_NULLS_LAST)] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalExchange[SINGLE] () => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+                    Cost: ?, Output: ? rows (?B)
+                - TopNPartial[100 by (o_totalprice DESC_NULLS_LAST, o_orderdate ASC_NULLS_LAST)] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_41]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice][$hashvalue] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, $hashvalue, sum_41]]
+                                Cost: ?, Output: ? rows (?B)
+                                sum_41 := ""sum""(""sum_67"")
+                            - LocalExchange[HASH][$hashvalue] (""c_name"", ""c_custkey"", ""o_orderkey"", ""o_orderdate"", ""o_totalprice"") => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum_67, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - Aggregate(PARTIAL)[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice][$hashvalue_81] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, $hashvalue_81, sum_67]]
+                                        Cost: ?, Output: ? rows (?B)
+                                        sum_67 := ""sum""(""l_quantity"")
+                                    - FilterProject[filterPredicate = ""expr_34""] => [[c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, l_quantity, $hashvalue_81]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            $hashvalue_81 := ""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_name""), 0)), COALESCE(""$operator$hash_code""(""c_custkey""), 0)), COALESCE(""$operator$hash_code""(""o_orderkey""), 0)), COALESCE(""$operator$hash_code""(""o_orderdate""), 0)), COALESCE(""$operator$hash_code""(""o_totalprice""), 0))
+                                        - Project[] => [[c_custkey, c_name, o_orderdate, l_quantity, o_totalprice, o_orderkey, expr_34]]
+                                                Cost: ?, Output: ? rows (?B)
+                                            - SemiJoin[o_orderkey = l_orderkey_11][$hashvalue_69, $hashvalue_76] => [[c_custkey, c_name, o_orderdate, l_quantity, o_totalprice, o_orderkey, $hashvalue_69, expr_34]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    Distribution: PARTITIONED
+                                                - RemoteExchange[REPARTITION][$hashvalue_69] => [[c_custkey, c_name, o_orderdate, l_quantity, o_totalprice, o_orderkey, $hashvalue_69]]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 2542727544.00, network: ?}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - Project[] => [[c_custkey, c_name, o_orderkey, o_totalprice, o_orderdate, l_quantity, $hashvalue_75]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 2542727544.00, network: 2596277544.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_75 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_orderkey""), 0))
+                                                        - InnerJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_70, $hashvalue_72] => [[c_custkey, c_name, o_orderkey, o_totalprice, o_orderdate, l_quantity]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 2542727544.00, network: 2596277544.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                Distribution: PARTITIONED
+                                                            - RemoteExchange[REPARTITION][$hashvalue_70] => [[c_custkey, c_name, $hashvalue_70]]
+                                                                    Estimates: {rows: 450000 (51.07MB), cpu: 156600000.00, memory: 0.00, network: 53550000.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}] => [[c_custkey, c_name, $hashvalue_71]]
+                                                                        Estimates: {rows: 450000 (51.07MB), cpu: 49500000.00, memory: 0.00, network: 0.00}/{rows: 450000 (51.07MB), cpu: 103050000.00, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_71 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                        LAYOUT: default.c_customer_star
+                                                                        c_custkey := c_custkey:string:0:REGULAR
+                                                                        c_name := c_name:string:1:REGULAR
+                                                            - LocalExchange[HASH][$hashvalue_72] (""o_custkey"") => [[o_orderkey, o_custkey, o_totalprice, o_orderdate, l_quantity, $hashvalue_72]]
+                                                                    Estimates: {rows: 17906532 (2.37GB), cpu: 10009751388.00, memory: 0.00, network: 2542727544.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - RemoteExchange[REPARTITION][$hashvalue_73] => [[o_orderkey, o_custkey, o_totalprice, o_orderdate, l_quantity, $hashvalue_73]]
+                                                                        Estimates: {rows: 17906532 (2.37GB), cpu: 7467023844.00, memory: 0.00, network: 2542727544.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[o_orderkey, o_custkey, o_totalprice, o_orderdate, l_quantity, $hashvalue_74]]
+                                                                            Estimates: {rows: 17906532 (2.37GB), cpu: 2381568756.00, memory: 0.00, network: 0.00}/{rows: 17906532 (2.37GB), cpu: 4924296300.00, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_74 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                            LAYOUT: default.lo_lineitem_orders_star
+                                                                            o_orderdate := o_orderdate:date:4:REGULAR
+                                                                            l_quantity := l_quantity:double:13:REGULAR
+                                                                            o_custkey := o_custkey:string:1:REGULAR
+                                                                            o_totalprice := o_totalprice:double:3:REGULAR
+                                                                            o_orderkey := o_orderkey:string:0:REGULAR
+                                                - LocalExchange[SINGLE] () => [[l_orderkey_11, $hashvalue_76]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - RemoteExchange[REPARTITION - REPLICATE NULLS AND ANY][$hashvalue_77] => [[l_orderkey_11, $hashvalue_77]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - FilterProject[filterPredicate = (""sum"" > 3E2)] => [[l_orderkey_11, $hashvalue_78]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - Aggregate(FINAL)[l_orderkey_11][$hashvalue_78] => [[l_orderkey_11, $hashvalue_78, sum]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    sum := ""sum""(""sum_68"")
+                                                                - LocalExchange[HASH][$hashvalue_78] (""l_orderkey_11"") => [[l_orderkey_11, sum_68, $hashvalue_78]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - RemoteExchange[REPARTITION][$hashvalue_79] => [[l_orderkey_11, sum_68, $hashvalue_79]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - Aggregate(PARTIAL)[l_orderkey_11][$hashvalue_80] => [[l_orderkey_11, $hashvalue_80, sum_68]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                sum_68 := ""sum""(""l_quantity_15"")
+                                                                            - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[l_orderkey_11, l_quantity_15, $hashvalue_80]]
+                                                                                    Estimates: {rows: 17906532 (1.22GB), cpu: 1146018048.00, memory: 0.00, network: 0.00}/{rows: 17906532 (1.22GB), cpu: 2453194884.00, memory: 0.00, network: 0.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    $hashvalue_80 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey_11""), 0))
+                                                                                    LAYOUT: default.lo_lineitem_orders_star
+                                                                                    l_quantity_15 := l_quantity:double:13:REGULAR
+                                                                                    l_orderkey_11 := l_orderkey:string:9:REGULAR
+"
+12/04/2019 11:51:31.
+--------------------------------------Finished QUERY 18.--------------------------------
+
+--------------------------------------STARTED QUERY 19. ---------------------------------
+12/04/2019 11:51:31.
+"- Output[revenue] => [[sum]]
+        Cost: ?, Output: ? rows (?B)
+        revenue := sum
+    - Aggregate(FINAL) => [[sum]]
+            Cost: ?, Output: ? rows (?B)
+            sum := ""sum""(""sum_7"")
+        - LocalExchange[SINGLE] () => [[sum_7]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[sum_7]]
+                    Cost: ?, Output: ? rows (?B)
+                - Aggregate(PARTIAL) => [[sum_7]]
+                        Cost: ?, Output: ? rows (?B)
+                        sum_7 := ""sum""(""expr"")
+                    - Project[] => [[expr]]
+                            Estimates: {rows: ? (?), cpu: ?, memory: 107400000.00, network: ?}
+                            Cost: ?, Output: ? rows (?B)
+                            expr := (""l_extendedprice"" * (1E0 - ""l_discount""))
+                        - InnerJoin[(""l_partkey"" = ""p_partkey"") AND ((((((""p_brand"" = CAST('Brand#12' AS varchar)) AND (""p_container"" IN (CAST('SM CASE' AS varchar), CAST('SM BOX' AS varchar), CAST('SM PACK' AS varchar), CAST('SM PKG' AS varchar)))) AND ((""l_quantity"" >= 1E0) AND (""l_quantity"" <= 1.1E1))) AND (""p_size"" BETWEEN 1 AND 5)) OR ((((""p_brand"" = CAST('Brand#23' AS varchar)) AND (""p_container"" IN (CAST('MED BAG' AS varchar), CAST('MED BOX' AS varchar), CAST('MED PKG' AS varchar), CAST('MED PACK' AS varchar)))) AND ((""l_quantity"" >= 1E1) AND (""l_quantity"" <= 2E1))) AND (""p_size"" BETWEEN 1 AND 10))) OR ((((""p_brand"" = CAST('Brand#34' AS varchar)) AND (""p_container"" IN (CAST('LG CASE' AS varchar), CAST('LG BOX' AS varchar), CAST('LG PACK' AS varchar), CAST('LG PKG' AS varchar)))) AND ((""l_quantity"" >= 2E1) AND (""l_quantity"" <= 3E1))) AND (""p_size"" BETWEEN 1 AND 15)))][$hashvalue, $hashvalue_9] => [[l_extendedprice, l_discount]]
+                                Estimates: {rows: ? (?), cpu: ?, memory: 107400000.00, network: ?}
+                                Cost: ?, Output: ? rows (?B)
+                                Distribution: PARTITIONED
+                            - RemoteExchange[REPARTITION][$hashvalue] => [[l_partkey, l_quantity, l_extendedprice, l_discount, $hashvalue]]
+                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                    Cost: ?, Output: ? rows (?B)
+                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""l_shipinstruct"" = CAST('DELIVER IN PERSON' AS varchar)) AND (""l_shipmode"" IN (CAST('AIR' AS varchar), CAST('AIR REG' AS varchar))))] => [[l_partkey, l_quantity, l_extendedprice, l_discount, $hashvalue_8]]
+                                        Estimates: {rows: 17906532 (1.52GB), cpu: 3438054144.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 6876108288.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                        Cost: ?, Output: ? rows (?B)
+                                        $hashvalue_8 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                        LAYOUT: default.lo_lineitem_orders_star
+                                        l_partkey := l_partkey:string:10:REGULAR
+                                        l_quantity := l_quantity:double:13:REGULAR
+                                        l_shipmode := l_shipmode:string:23:REGULAR
+                                        l_extendedprice := l_extendedprice:double:14:REGULAR
+                                        l_shipinstruct := l_shipinstruct:string:22:REGULAR
+                                        l_discount := l_discount:double:15:REGULAR
+                            - LocalExchange[HASH][$hashvalue_9] (""p_partkey"") => [[p_partkey, p_brand, p_size, p_container, $hashvalue_9]]
+                                    Estimates: {rows: 600000 (102.42MB), cpu: 424200000.00, memory: 0.00, network: 107400000.00}
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_10] => [[p_partkey, p_brand, p_size, p_container, $hashvalue_10]]
+                                        Estimates: {rows: 600000 (102.42MB), cpu: 316800000.00, memory: 0.00, network: 107400000.00}
+                                        Cost: ?, Output: ? rows (?B)
+                                    - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}] => [[p_partkey, p_brand, p_size, p_container, $hashvalue_11]]
+                                            Estimates: {rows: 600000 (102.42MB), cpu: 102000000.00, memory: 0.00, network: 0.00}/{rows: 600000 (102.42MB), cpu: 209400000.00, memory: 0.00, network: 0.00}
+                                            Cost: ?, Output: ? rows (?B)
+                                            $hashvalue_11 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                            LAYOUT: default.p_part_star
+                                            p_partkey := p_partkey:string:0:REGULAR
+                                            p_container := p_container:string:6:REGULAR
+                                            p_brand := p_brand:string:3:REGULAR
+                                            p_size := p_size:int:5:REGULAR
+"
+12/04/2019 11:51:33.
+--------------------------------------Finished QUERY 19.--------------------------------
+
+--------------------------------------STARTED QUERY 20. ---------------------------------
+12/04/2019 11:51:33.
+"- Output[s_name, s_address] => [[s_name, s_address]]
+        Cost: ?, Output: ? rows (?B)
+    - RemoteMerge[s_name ASC_NULLS_LAST] => [[s_name, s_address]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[s_name ASC_NULLS_LAST] => [[s_name, s_address]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[s_name ASC_NULLS_LAST] => [[s_name, s_address]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[s_name, s_address]]
+                        Cost: ?, Output: ? rows (?B)
+                    - FilterProject[filterPredicate = ""expr_20""] => [[s_name, s_address]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Project[] => [[s_suppkey, s_name, s_address, expr_20]]
+                                Cost: ?, Output: ? rows (?B)
+                            - SemiJoin[s_suppkey = ps_suppkey][$hashvalue, $hashvalue_34] => [[s_suppkey, s_name, s_address, $hashvalue, expr_20]]
+                                    Cost: ?, Output: ? rows (?B)
+                                    Distribution: PARTITIONED
+                                - RemoteExchange[REPARTITION][$hashvalue] => [[s_suppkey, s_name, s_address, $hashvalue]]
+                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                        Cost: ?, Output: ? rows (?B)
+                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""n_name"" = CAST('CANADA' AS varchar))] => [[s_suppkey, s_name, s_address, n_name, $hashvalue_33]]
+                                            Estimates: {rows: 30000 (6.55MB), cpu: 6600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 13200000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                            Cost: ?, Output: ? rows (?B)
+                                            $hashvalue_33 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                            LAYOUT: default.s_supplier_star
+                                            s_name := s_name:string:1:REGULAR
+                                            s_address := s_address:string:2:REGULAR
+                                            s_suppkey := s_suppkey:string:0:REGULAR
+                                            n_name := n_name:string:8:REGULAR
+                                - LocalExchange[SINGLE] () => [[ps_suppkey, $hashvalue_34]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - RemoteExchange[REPARTITION - REPLICATE NULLS AND ANY][$hashvalue_35] => [[ps_suppkey, $hashvalue_35]]
+                                            Cost: ?, Output: ? rows (?B)
+                                        - FilterProject[filterPredicate = (CAST(""ps_availqty"" AS double) > (5E-1 * COALESCE(""sum"", ""sum_31"")))] => [[ps_suppkey, $hashvalue_49]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_49 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                            - CrossJoin => [[ps_availqty, ps_suppkey, sum, sum_31]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    Distribution: REPLICATED
+                                                - LeftJoin[(""ps_partkey"" = ""l_partkey"") AND (""ps_suppkey"" = ""l_suppkey"")][$hashvalue_41, $hashvalue_42] => [[ps_suppkey, ps_availqty, sum]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        Distribution: PARTITIONED
+                                                    - FilterProject[filterPredicate = ""expr_8""] => [[ps_partkey, ps_suppkey, ps_availqty, expr_8, $hashvalue_41]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            $hashvalue_41 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_partkey""), 0)), COALESCE(""$operator$hash_code""(""ps_suppkey""), 0))
+                                                        - Project[] => [[ps_partkey, ps_suppkey, ps_availqty, expr_8]]
+                                                                Estimates: {rows: 2400000 (267.79MB), cpu: ?, memory: ?, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - SemiJoin[ps_partkey = p_partkey][$hashvalue_36, $hashvalue_38] => [[ps_partkey, ps_suppkey, ps_availqty, $hashvalue_36, expr_8]]
+                                                                    Estimates: {rows: 2400000 (288.39MB), cpu: ?, memory: ?, network: ?}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    Distribution: PARTITIONED
+                                                                - RemoteExchange[REPARTITION][$hashvalue_36] => [[ps_partkey, ps_suppkey, ps_availqty, $hashvalue_36]]
+                                                                        Estimates: {rows: 2400000 (283.81MB), cpu: 871200000.00, memory: 0.00, network: 297600000.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=ps_partsupp_star, analyzePartitionValues=Optional.empty}] => [[ps_partkey, ps_suppkey, ps_availqty, $hashvalue_37]]
+                                                                            Estimates: {rows: 2400000 (283.81MB), cpu: 276000000.00, memory: 0.00, network: 0.00}/{rows: 2400000 (283.81MB), cpu: 573600000.00, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            $hashvalue_37 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""ps_partkey""), 0))
+                                                                            LAYOUT: default.ps_partsupp_star
+                                                                            ps_availqty := ps_availqty:int:2:REGULAR
+                                                                            ps_suppkey := ps_suppkey:string:1:REGULAR
+                                                                            ps_partkey := ps_partkey:string:0:REGULAR
+                                                                - LocalExchange[SINGLE] () => [[p_partkey, $hashvalue_38]]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - RemoteExchange[REPARTITION - REPLICATE NULLS AND ANY][$hashvalue_39] => [[p_partkey, $hashvalue_39]]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=p_part_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""p_name"" LIKE 'forest%')] => [[p_partkey, $hashvalue_40]]
+                                                                                Estimates: {rows: 600000 (36.62MB), cpu: 66000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 132000000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                $hashvalue_40 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""p_partkey""), 0))
+                                                                                LAYOUT: default.p_part_star
+                                                                                p_partkey := p_partkey:string:0:REGULAR
+                                                                                p_name := p_name:string:1:REGULAR
+                                                    - LocalExchange[HASH][$hashvalue_42] (""l_partkey"", ""l_suppkey"") => [[l_partkey, l_suppkey, sum, $hashvalue_42]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - Project[] => [[l_partkey, l_suppkey, sum, $hashvalue_43]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - RemoteExchange[REPARTITION][$hashvalue_44] => [[l_partkey, l_suppkey, sum, $hashvalue_43, $hashvalue_44]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - Project[] => [[l_partkey, l_suppkey, $hashvalue_45, sum, $hashvalue_48]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_48 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0))
+                                                                    - Aggregate(FINAL)[l_partkey, l_suppkey][$hashvalue_45] => [[l_partkey, l_suppkey, $hashvalue_45, sum]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            sum := ""sum""(""sum_32"")
+                                                                        - LocalExchange[HASH][$hashvalue_45] (""l_partkey"", ""l_suppkey"") => [[l_partkey, l_suppkey, sum_32, $hashvalue_45]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - RemoteExchange[REPARTITION][$hashvalue_46] => [[l_partkey, l_suppkey, sum_32, $hashvalue_46]]
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - Aggregate(PARTIAL)[l_partkey, l_suppkey][$hashvalue_47] => [[l_partkey, l_suppkey, $hashvalue_47, sum_32]]
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        sum_32 := ""sum""(""l_quantity"")
+                                                                                    - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""l_shipdate"" >= DATE '1994-01-01') AND (""l_shipdate"" < DATE '1995-01-01'))] => [[l_quantity, l_partkey, l_suppkey, $hashvalue_47]]
+                                                                                            Estimates: {rows: 17906532 (2.13GB), cpu: 2220409968.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4440819936.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            $hashvalue_47 := ""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_partkey""), 0)), COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                                                            LAYOUT: default.lo_lineitem_orders_star
+                                                                                            l_partkey := l_partkey:string:10:REGULAR
+                                                                                            l_quantity := l_quantity:double:13:REGULAR
+                                                                                            l_suppkey := l_suppkey:string:11:REGULAR
+                                                                                            l_shipdate := l_shipdate:date:19:REGULAR
+                                                - LocalExchange[SINGLE] () => [[sum_31]]
+                                                        Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 45.00}
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - RemoteExchange[REPLICATE] => [[sum_31]]
+                                                            Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 45.00}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - Aggregate => [[sum_31]]
+                                                                Estimates: {rows: 1 (9B), cpu: 1.00, memory: 9.00, network: 0.00}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                sum_31 := ""sum""(""expr_29"")
+                                                            - Values => [[expr_29]]
+                                                                    Estimates: {rows: 1 (1B), cpu: 0.00, memory: 0.00, network: 0.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    (null)
+"
+12/04/2019 11:51:35.
+--------------------------------------Finished QUERY 20.--------------------------------
+
+--------------------------------------STARTED QUERY 21. ---------------------------------
+12/04/2019 11:51:35.
+"- Output[s_name, numwait] => [[s_name, count]]
+        Cost: ?, Output: ? rows (?B)
+        numwait := count
+    - TopN[100 by (count DESC_NULLS_LAST, s_name ASC_NULLS_LAST)] => [[s_name, count]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalExchange[SINGLE] () => [[s_name, count]]
+                Cost: ?, Output: ? rows (?B)
+            - RemoteExchange[GATHER] => [[s_name, count]]
+                    Cost: ?, Output: ? rows (?B)
+                - TopNPartial[100 by (count DESC_NULLS_LAST, s_name ASC_NULLS_LAST)] => [[s_name, count]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[s_name, count]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[s_name][$hashvalue] => [[s_name, $hashvalue, count]]
+                                Cost: ?, Output: ? rows (?B)
+                                count := ""count""(""count_271"")
+                            - LocalExchange[HASH][$hashvalue] (""s_name"") => [[s_name, count_271, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_273] => [[s_name, count_271, $hashvalue_273]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[s_name][$hashvalue_292] => [[s_name, $hashvalue_292, count_271]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            count_271 := ""count""(*)
+                                        - FilterProject[filterPredicate = (""count_266"" <= BIGINT '0')] => [[s_name, $hashvalue_292]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_292 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_name""), 0))
+                                            - Aggregate(STREAMING)[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, exists, unique] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, exists, unique, count_266]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    count_266 := ""count""(""non_null"")
+                                                - LeftJoin[(""l_orderkey"" = ""l_orderkey_137"") AND (""l_suppkey_139"" <> ""s_suppkey"")][$hashvalue_288, $hashvalue_289] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, exists, unique, non_null]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                        Distribution: PARTITIONED
+                                                    - AssignUniqueId => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, exists, $hashvalue_288, unique]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - FilterProject[filterPredicate = (""count_268"" > BIGINT '0')] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, exists, $hashvalue_288]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                exists := (""count_268"" > BIGINT '0')
+                                                                $hashvalue_288 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey""), 0))
+                                                            - Project[] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270, count_268]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - Aggregate(FINAL)[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270][$hashvalue_274] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270, $hashvalue_274, count_268]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        count_268 := ""count""(""count_272"")
+                                                                    - LocalExchange[HASH][$hashvalue_275] (""s_suppkey"", ""s_name"", ""n_name"", ""o_orderstatus"", ""l_orderkey"", ""l_commitdate"", ""l_receiptdate"") => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270, count_272, $hashvalue_274, $hashvalue_275]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - Project[] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270, $hashvalue_286, count_272, $hashvalue_287]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                $hashvalue_287 := ""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0)), COALESCE(""$operator$hash_code""(""s_name""), 0)), COALESCE(""$operator$hash_code""(""n_name""), 0)), COALESCE(""$operator$hash_code""(""o_orderstatus""), 0)), COALESCE(""$operator$hash_code""(""l_orderkey""), 0)), COALESCE(""$operator$hash_code""(""l_commitdate""), 0)), COALESCE(""$operator$hash_code""(""l_receiptdate""), 0))
+                                                                            - Aggregate(PARTIAL)[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270][$hashvalue_286] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, unique_270, $hashvalue_286, count_272]]
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    count_272 := ""count""(""non_null_269"")
+                                                                                - Project[] => [[s_name, s_suppkey, n_name, l_commitdate, o_orderstatus, l_receiptdate, l_orderkey, unique_270, non_null_269, $hashvalue_286]]
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        $hashvalue_286 := ""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0)), COALESCE(""$operator$hash_code""(""s_name""), 0)), COALESCE(""$operator$hash_code""(""n_name""), 0)), COALESCE(""$operator$hash_code""(""o_orderstatus""), 0)), COALESCE(""$operator$hash_code""(""l_orderkey""), 0)), COALESCE(""$operator$hash_code""(""l_commitdate""), 0)), COALESCE(""$operator$hash_code""(""l_receiptdate""), 0)), COALESCE(""$operator$hash_code""(""unique_270""), 0))
+                                                                                    - LeftJoin[(""l_orderkey"" = ""l_orderkey_10"") AND (""l_suppkey_12"" <> ""s_suppkey"")][$hashvalue_276, $hashvalue_283] => [[s_name, s_suppkey, n_name, l_commitdate, o_orderstatus, l_receiptdate, l_orderkey, unique_270, non_null_269]]
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                            Distribution: PARTITIONED
+                                                                                        - AssignUniqueId => [[s_name, s_suppkey, n_name, l_commitdate, o_orderstatus, l_receiptdate, l_orderkey, $hashvalue_276, unique_270]]
+                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                            - RemoteExchange[REPARTITION][$hashvalue_276] => [[s_name, s_suppkey, n_name, l_commitdate, o_orderstatus, l_receiptdate, l_orderkey, $hashvalue_276]]
+                                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                                - Project[] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate, $hashvalue_282]]
+                                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                                        $hashvalue_282 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey""), 0))
+                                                                                                    - InnerJoin[(""s_suppkey"" = ""l_suppkey"")][$hashvalue_277, $hashvalue_279] => [[s_suppkey, s_name, n_name, o_orderstatus, l_orderkey, l_commitdate, l_receiptdate]]
+                                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                                            Distribution: PARTITIONED
+                                                                                                        - RemoteExchange[REPARTITION][$hashvalue_277] => [[s_suppkey, s_name, n_name, $hashvalue_277]]
+                                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                                            - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=s_supplier_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""n_name"" = CAST('SAUDI ARABIA' AS varchar))] => [[s_suppkey, s_name, n_name, $hashvalue_278]]
+                                                                                                                    Estimates: {rows: 30000 (4.98MB), cpu: 4950000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 9900000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                                                    $hashvalue_278 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""s_suppkey""), 0))
+                                                                                                                    LAYOUT: default.s_supplier_star
+                                                                                                                    s_name := s_name:string:1:REGULAR
+                                                                                                                    s_suppkey := s_suppkey:string:0:REGULAR
+                                                                                                                    n_name := n_name:string:8:REGULAR
+                                                                                                        - LocalExchange[HASH][$hashvalue_279] (""l_suppkey"") => [[o_orderstatus, l_orderkey, l_suppkey, l_commitdate, l_receiptdate, $hashvalue_279]]
+                                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                                            - RemoteExchange[REPARTITION][$hashvalue_280] => [[o_orderstatus, l_orderkey, l_suppkey, l_commitdate, l_receiptdate, $hashvalue_280]]
+                                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""o_orderstatus"" = CAST('F' AS varchar)) AND (""l_receiptdate"" > ""l_commitdate""))] => [[o_orderstatus, l_orderkey, l_suppkey, l_commitdate, l_receiptdate, $hashvalue_281]]
+                                                                                                                        Estimates: {rows: 17906532 (3.07GB), cpu: 3133643100.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 6267286200.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                                                        $hashvalue_281 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_suppkey""), 0))
+                                                                                                                        LAYOUT: default.lo_lineitem_orders_star
+                                                                                                                        l_commitdate := l_commitdate:date:20:REGULAR
+                                                                                                                        o_orderstatus := o_orderstatus:string:2:REGULAR
+                                                                                                                        l_receiptdate := l_receiptdate:date:21:REGULAR
+                                                                                                                        l_orderkey := l_orderkey:string:9:REGULAR
+                                                                                                                        l_suppkey := l_suppkey:string:11:REGULAR
+                                                                                        - LocalExchange[HASH][$hashvalue_283] (""l_orderkey_10"") => [[l_orderkey_10, l_suppkey_12, non_null_269, $hashvalue_283]]
+                                                                                                Estimates: {rows: 17906532 (2.02GB), cpu: 8469789636.00, memory: 0.00, network: 2166690372.00}
+                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                            - RemoteExchange[REPARTITION][$hashvalue_284] => [[l_orderkey_10, l_suppkey_12, non_null_269, $hashvalue_284]]
+                                                                                                    Estimates: {rows: 17906532 (2.02GB), cpu: 6303099264.00, memory: 0.00, network: 2166690372.00}
+                                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                                - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[l_orderkey_10, l_suppkey_12, non_null_269, $hashvalue_285]]
+                                                                                                        Estimates: {rows: 17906532 (2.02GB), cpu: 1969718520.00, memory: 0.00, network: 0.00}/{rows: 17906532 (2.02GB), cpu: 4136408892.00, memory: 0.00, network: 0.00}
+                                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                                        non_null_269 := true
+                                                                                                        $hashvalue_285 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey_10""), 0))
+                                                                                                        LAYOUT: default.lo_lineitem_orders_star
+                                                                                                        l_suppkey_12 := l_suppkey:string:11:REGULAR
+                                                                                                        l_orderkey_10 := l_orderkey:string:9:REGULAR
+                                                    - LocalExchange[HASH][$hashvalue_289] (""l_orderkey_137"") => [[l_orderkey_137, l_suppkey_139, non_null, $hashvalue_289]]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                            Cost: ?, Output: ? rows (?B)
+                                                        - RemoteExchange[REPARTITION][$hashvalue_290] => [[l_orderkey_137, l_suppkey_139, non_null, $hashvalue_290]]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - Project[] => [[l_orderkey_137, l_suppkey_139, non_null, $hashvalue_291]]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    non_null := true
+                                                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""l_receiptdate_149"" > ""l_commitdate_148"")] => [[l_orderkey_137, l_suppkey_139, $hashvalue_291]]
+                                                                        Estimates: {rows: 17906532 (1.98GB), cpu: 2148783840.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 4297567680.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        $hashvalue_291 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""l_orderkey_137""), 0))
+                                                                        LAYOUT: default.lo_lineitem_orders_star
+                                                                        l_commitdate_148 := l_commitdate:date:20:REGULAR
+                                                                        l_orderkey_137 := l_orderkey:string:9:REGULAR
+                                                                        l_receiptdate_149 := l_receiptdate:date:21:REGULAR
+                                                                        l_suppkey_139 := l_suppkey:string:11:REGULAR
+"
+12/04/2019 11:51:37.
+--------------------------------------Finished QUERY 21.--------------------------------
+
+--------------------------------------STARTED QUERY 22. ---------------------------------
+12/04/2019 11:51:37.
+"- Output[cntrycode, numcust, totacctbal] => [[substr, count, sum]]
+        Cost: ?, Output: ? rows (?B)
+        cntrycode := substr
+        numcust := count
+        totacctbal := sum
+    - RemoteMerge[substr ASC_NULLS_LAST] => [[substr, count, sum]]
+            Cost: ?, Output: ? rows (?B)
+        - LocalMerge[substr ASC_NULLS_LAST] => [[substr, count, sum]]
+                Cost: ?, Output: ? rows (?B)
+            - PartialSort[substr ASC_NULLS_LAST] => [[substr, count, sum]]
+                    Cost: ?, Output: ? rows (?B)
+                - RemoteExchange[REPARTITION] => [[substr, count, sum]]
+                        Cost: ?, Output: ? rows (?B)
+                    - Project[] => [[substr, count, sum]]
+                            Cost: ?, Output: ? rows (?B)
+                        - Aggregate(FINAL)[substr][$hashvalue] => [[substr, $hashvalue, count, sum]]
+                                Cost: ?, Output: ? rows (?B)
+                                count := ""count""(""count_141"")
+                                sum := ""sum""(""sum_142"")
+                            - LocalExchange[HASH][$hashvalue] (""substr"") => [[substr, sum_142, count_141, $hashvalue]]
+                                    Cost: ?, Output: ? rows (?B)
+                                - RemoteExchange[REPARTITION][$hashvalue_144] => [[substr, sum_142, count_141, $hashvalue_144]]
+                                        Cost: ?, Output: ? rows (?B)
+                                    - Aggregate(PARTIAL)[substr][$hashvalue_150] => [[substr, $hashvalue_150, sum_142, count_141]]
+                                            Cost: ?, Output: ? rows (?B)
+                                            sum_142 := ""sum""(""c_acctbal"")
+                                            count_141 := ""count""(*)
+                                        - Project[] => [[substr, c_acctbal, $hashvalue_150]]
+                                                Cost: ?, Output: ? rows (?B)
+                                                $hashvalue_150 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""substr""), 0))
+                                            - Project[] => [[substr, c_acctbal]]
+                                                    Cost: ?, Output: ? rows (?B)
+                                                    substr := ""substr""(""c_phone"", BIGINT '1', BIGINT '2')
+                                                - FilterProject[filterPredicate = (NOT COALESCE(""subquerytrue"", false))] => [[c_phone, c_acctbal]]
+                                                        Cost: ?, Output: ? rows (?B)
+                                                    - LeftJoin[(""c_custkey"" = ""o_custkey"")][$hashvalue_145, $hashvalue_147] => [[c_phone, c_acctbal, subquerytrue]]
+                                                            Cost: ?, Output: ? rows (?B)
+                                                            Distribution: PARTITIONED
+                                                        - RemoteExchange[REPARTITION][$hashvalue_145] => [[c_custkey, c_phone, c_acctbal, $hashvalue_145]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                            - FilterProject[filterPredicate = (""c_acctbal"" > ""avg"")] => [[c_custkey, c_phone, c_acctbal, $hashvalue_146]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                    $hashvalue_146 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""c_custkey""), 0))
+                                                                - CrossJoin => [[c_custkey, c_phone, c_acctbal, avg]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                        Distribution: REPLICATED
+                                                                    - ScanFilter[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}, filterPredicate = (""substr""(""c_phone"", BIGINT '1', BIGINT '2') IN (CAST('13' AS varchar), CAST('31' AS varchar), CAST('23' AS varchar), CAST('29' AS varchar), CAST('30' AS varchar), CAST('18' AS varchar), CAST('17' AS varchar)))] => [[c_custkey, c_phone, c_acctbal]]
+                                                                            Estimates: {rows: 450000 (51.07MB), cpu: 53550000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 107100000.00, memory: 0.00, network: 0.00}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                            LAYOUT: default.c_customer_star
+                                                                            c_custkey := c_custkey:string:0:REGULAR
+                                                                            c_acctbal := c_acctbal:double:5:REGULAR
+                                                                            c_phone := c_phone:string:4:REGULAR
+                                                                    - LocalExchange[SINGLE] () => [[avg]]
+                                                                            Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - RemoteExchange[REPLICATE] => [[avg]]
+                                                                                Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - EnforceSingleRow => [[avg]]
+                                                                                    Estimates: {rows: 1 (9B), cpu: ?, memory: ?, network: ?}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                - Aggregate(FINAL) => [[avg]]
+                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                        avg := ""avg""(""avg_143"")
+                                                                                    - LocalExchange[SINGLE] () => [[avg_143]]
+                                                                                            Cost: ?, Output: ? rows (?B)
+                                                                                        - RemoteExchange[GATHER] => [[avg_143]]
+                                                                                                Cost: ?, Output: ? rows (?B)
+                                                                                            - Aggregate(PARTIAL) => [[avg_143]]
+                                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                                    avg_143 := ""avg""(""c_acctbal_5"")
+                                                                                                - ScanFilterProject[table = hive:HiveTableHandle{schemaName=default, tableName=c_customer_star, analyzePartitionValues=Optional.empty}, filterPredicate = ((""c_acctbal_5"" > 0E0) AND (""substr""(""c_phone_4"", BIGINT '1', BIGINT '2') IN (CAST('13' AS varchar), CAST('31' AS varchar), CAST('23' AS varchar), CAST('29' AS varchar), CAST('30' AS varchar), CAST('18' AS varchar), CAST('17' AS varchar))))] => [[c_acctbal_5]]
+                                                                                                        Estimates: {rows: 450000 (3.86MB), cpu: 28800000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 57600000.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                        Cost: ?, Output: ? rows (?B)
+                                                                                                        LAYOUT: default.c_customer_star
+                                                                                                        c_acctbal_5 := c_acctbal:double:5:REGULAR
+                                                                                                        c_phone_4 := c_phone:string:4:REGULAR
+                                                        - Project[] => [[subquerytrue, o_custkey, $hashvalue_147]]
+                                                                Cost: ?, Output: ? rows (?B)
+                                                                subquerytrue := true
+                                                            - Aggregate(FINAL)[o_custkey][$hashvalue_147] => [[o_custkey, $hashvalue_147]]
+                                                                    Cost: ?, Output: ? rows (?B)
+                                                                - LocalExchange[HASH][$hashvalue_147] (""o_custkey"") => [[o_custkey, $hashvalue_147]]
+                                                                        Cost: ?, Output: ? rows (?B)
+                                                                    - RemoteExchange[REPARTITION][$hashvalue_148] => [[o_custkey, $hashvalue_148]]
+                                                                            Cost: ?, Output: ? rows (?B)
+                                                                        - Aggregate(PARTIAL)[o_custkey][$hashvalue_149] => [[o_custkey, $hashvalue_149]]
+                                                                                Cost: ?, Output: ? rows (?B)
+                                                                            - ScanProject[table = hive:HiveTableHandle{schemaName=default, tableName=lo_lineitem_orders_star, analyzePartitionValues=Optional.empty}] => [[o_custkey, $hashvalue_149]]
+                                                                                    Estimates: {rows: 17906532 (1.07GB), cpu: 984859260.00, memory: 0.00, network: 0.00}/{rows: 17906532 (1.07GB), cpu: 2130877308.00, memory: 0.00, network: 0.00}
+                                                                                    Cost: ?, Output: ? rows (?B)
+                                                                                    $hashvalue_149 := ""combine_hash""(bigint '0', COALESCE(""$operator$hash_code""(""o_custkey""), 0))
+                                                                                    LAYOUT: default.lo_lineitem_orders_star
+                                                                                    o_custkey := o_custkey:string:1:REGULAR
+"
+12/04/2019 11:51:39.
+--------------------------------------Finished QUERY 22.--------------------------------
+
